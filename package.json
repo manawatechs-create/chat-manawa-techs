@@ -1,16 +1,7 @@
 {
   "name": "manawa-techs",
   "version": "1.0.0",
-  "description": "MANAWA TECHS Assistant IA",
-  "main": "api/index.js",
-  "scripts": {
-    "start": "node backend/server.js",
-    "vercel-build": "echo 'Build completed'"
-  },
   "dependencies": {
-    "express": "^4.18.2",
-    "cors": "^2.8.5",
-    "axios": "^1.6.0",
-    "dotenv": "^16.3.1"
+    "axios": "^1.6.0"
   }
 }
