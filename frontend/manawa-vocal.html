@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANAWA TECHS - Assistant Vocal IA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --blue: #2563EB; --blue-dark: #1D4ED8; --blue-light: #DBEAFE; --blue-bg: #EFF6FF;
+            --orange: #F97316; --orange-dark: #EA580C; --orange-light: #FED7AA; --orange-bg: #FFF7ED;
+            --white: #FFFFFF; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
+            --gray-500: #6B7280; --gray-700: #374151; --gray-900: #111827;
+            --green: #16A34A; --red: #DC2626; --purple: #8B5CF6;
+            --radius: 14px; --radius-lg: 18px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+            --transition: all 0.2s ease;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:var(--gray-50); color:var(--gray-900); min-height:100vh; font-size:15px; }
+
+        .app { display:flex; min-height:100vh; }
+        
+        /* SIDEBAR */
+        .sidebar { width:250px; background:var(--white); border-right:1px solid var(--gray-200); position:fixed; height:100vh; overflow-y:auto; z-index:50; padding:16px 12px; }
+        .logo { display:flex; align-items:center; gap:8px; padding:8px 8px 16px; border-bottom:1px solid var(--gray-200); margin-bottom:12px; }
+        .logo-icon { width:34px;height:34px; background:linear-gradient(135deg,var(--orange),var(--blue)); border-radius:10px; display:flex;align-items:center;justify-content:center;color:white;font-size:16px;font-weight:700; }
+        .logo-text { font-weight:800; font-size:15px; }
+        .logo-sub { font-size:9px; color:var(--gray-500); display:block; text-transform:uppercase; letter-spacing:1px; }
+        
+        .nav-section { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--gray-500); padding:14px 8px 6px; font-weight:700; }
+        .nav-item { display:flex; align-items:center; gap:8px; padding:9px 10px; border-radius:8px; cursor:pointer; font-size:13px; color:var(--gray-700); transition:var(--transition); margin-bottom:1px; }
+        .nav-item:hover { background:var(--gray-100); }
+        .nav-item.active { background:var(--blue-bg); color:var(--blue); font-weight:600; }
+        .nav-item i { font-size:16px; width:20px; text-align:center; }
+        
+        .main { margin-left:250px; flex:1; padding:24px 28px; }
+        
+        /* TOP */
+        .topbar { margin-bottom:24px; }
+        .topbar h1 { font-size:24px; font-weight:800; }
+        .topbar p { color:var(--gray-500); font-size:13px; }
+        
+        /* CARDS */
+        .card { background:var(--white); border:1px solid var(--gray-200); border-radius:var(--radius-lg); padding:20px 24px; margin-bottom:18px; box-shadow:var(--shadow); }
+        .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--gray-100); }
+        .card-header h3 { font-size:16px; font-weight:700; }
+        
+        .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        @media(max-width:768px){ .grid-2{grid-template-columns:1fr;} .sidebar{transform:translateX(-100%);} .main{margin-left:0;} }
+        
+        /* BUTTONS */
+        .btn { padding:10px 18px; border-radius:10px; font-weight:600; font-size:13px; cursor:pointer; transition:var(--transition); border:none; display:inline-flex;align-items:center;gap:6px; font-family:inherit; white-space:nowrap; }
+        .btn-primary { background:var(--blue); color:white; box-shadow:0 2px 8px rgba(37,99,235,0.25); }
+        .btn-primary:hover { background:var(--blue-dark); }
+        .btn-orange { background:var(--orange); color:white; }
+        .btn-green { background:var(--green); color:white; }
+        .btn-outline { background:white; border:2px solid var(--gray-200); }
+        .btn-outline:hover { border-color:var(--blue); }
+        .btn-lg { padding:14px 28px; font-size:15px; }
+        .btn-block { width:100%; justify-content:center; }
+        .btn-sm { padding:6px 12px; font-size:11px; }
+        
+        /* MICRO BUTTON */
+        .mic-btn {
+            width:100px; height:100px;
+            border-radius:50%;
+            border:4px solid var(--gray-200);
+            background:var(--white);
+            cursor:pointer;
+            transition:var(--transition);
+            display:flex; align-items:center; justify-content:center;
+            margin:0 auto;
+            font-size:36px;
+            color:var(--gray-500);
+        }
+        .mic-btn:hover { border-color:var(--blue); color:var(--blue); box-shadow:0 0 30px rgba(37,99,235,0.2); }
+        .mic-btn.listening { border-color:var(--red); color:var(--red); animation:pulse 1.5s infinite; box-shadow:0 0 40px rgba(220,38,38,0.3); }
+        .mic-btn.processing { border-color:var(--orange); color:var(--orange); }
+        
+        @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,0.4);} 50%{box-shadow:0 0 0 25px rgba(220,38,38,0);} }
+        
+        .mic-status { text-align:center; margin-top:10px; font-weight:600; font-size:13px; color:var(--gray-500); }
+        .mic-status.listening { color:var(--red); }
+        .mic-status.processing { color:var(--orange); }
+        
+        /* POST PREVIEW MANAWA STYLE */
+        .manawa-post {
+            background:var(--white);
+            border:1px solid var(--gray-200);
+            border-radius:var(--radius-lg);
+            padding:24px;
+            white-space:pre-wrap;
+            line-height:1.9;
+            font-size:14px;
+            border-left:5px solid var(--blue);
+        }
+        
+        .manawa-post .section-title {
+            font-size:16px;
+            font-weight:700;
+            color:var(--blue);
+            margin-top:14px;
+            margin-bottom:6px;
+        }
+        
+        .manawa-post .highlight-text {
+            background:var(--orange-bg);
+            padding:8px 14px;
+            border-radius:8px;
+            border-left:3px solid var(--orange);
+            margin:8px 0;
+            font-weight:600;
+        }
+        
+        /* CHAT */
+        .chat-box {
+            background:var(--white);
+            border:1px solid var(--gray-200);
+            border-radius:var(--radius-lg);
+            height:350px;
+            overflow-y:auto;
+            padding:16px;
+        }
+        
+        .chat-msg {
+            margin-bottom:12px;
+            padding:10px 14px;
+            border-radius:10px;
+            max-width:85%;
+            font-size:13px;
+            line-height:1.5;
+        }
+        
+        .chat-msg.user {
+            background:var(--blue);
+            color:white;
+            margin-left:auto;
+        }
+        
+        .chat-msg.ia {
+            background:var(--gray-100);
+            color:var(--gray-900);
+        }
+        
+        .chat-input-row {
+            display:flex; gap:8px; margin-top:10px;
+        }
+        
+        .form-control { width:100%; padding:10px 14px; border:2px solid var(--gray-200); border-radius:10px; font-size:14px; font-family:inherit; }
+        .form-control:focus { outline:none; border-color:var(--blue); }
+        
+        .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:600; }
+        .badge-blue { background:var(--blue-bg); color:var(--blue); }
+        .badge-orange { background:var(--orange-bg); color:var(--orange-dark); }
+        
+        /* HISTORY */
+        .history-item {
+            padding:10px 14px;
+            border-radius:8px;
+            cursor:pointer;
+            transition:var(--transition);
+            margin-bottom:4px;
+            font-size:13px;
+            border:1px solid transparent;
+        }
+        .history-item:hover { background:var(--blue-bg); border-color:var(--blue-light); }
+    </style>
+</head>
+<body>
+
+<div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="logo"><div class="logo-icon">⚡</div><div><span class="logo-text">MANAWA</span><span class="logo-sub">Assistant Vocal</span></div></div>
+        
+        <div class="nav-section">Principal</div>
+        <div class="nav-item active" onclick="nav('vocal')"><i class="bi bi-mic-fill"></i> Assistant Vocal</div>
+        <div class="nav-item" onclick="nav('chat')"><i class="bi bi-chat-dots"></i> Chat IA</div>
+        <div class="nav-item" onclick="nav('historique')"><i class="bi bi-clock-history"></i> Historique</div>
+        <div class="nav-item" onclick="nav('domaines')"><i class="bi bi-grid"></i> Tous les domaines</div>
+        <div class="nav-item" onclick="nav('planning')"><i class="bi bi-calendar-check"></i> Planification</div>
+    </aside>
+    
+    <!-- MAIN -->
+    <main class="main" id="mainContent"></main>
+</div>
+
+<script>
+// ============ BASE DE CONNAISSANCES MANAWA ============
+const DOMAINES = {
+    'odoo': { nom:'Odoo ERP', emoji:'📊', mots:['odoo','erp','gestion','stock','comptabilité','vente','facture'] },
+    'web': { nom:'Développement Web', emoji:'🌐', mots:['site web','internet','html','css','javascript','développeur','application web'] },
+    'ia': { nom:'Intelligence Artificielle', emoji:'🤖', mots:['ia','intelligence artificielle','machine learning','chatgpt','automatisation'] },
+    'formation': { nom:'Formation IT', emoji:'🎓', mots:['formation','cours','apprendre','étudier','certification','carrière'] },
+    'securite': { nom:'Cybersécurité', emoji:'🔒', mots:['sécurité','piratage','mot de passe','virus','protection','données'] },
+    'linux': { nom:'Linux & Systèmes', emoji:'🐧', mots:['linux','ubuntu','serveur','terminal','commande','admin'] },
+    'bureautique': { nom:'Bureautique', emoji:'📎', mots:['excel','word','powerpoint','bureau','document','tableau'] },
+    'reseau': { nom:'Réseaux', emoji:'🌐', mots:['réseau','ip','dns','routeur','wifi','connexion','protocole'] },
+    'imprimerie': { nom:'Imprimerie', emoji:'🖨️', mots:['imprimerie','bâche','flyer','affiche','vinyle','impression'] }
+};
+
+// ============ GÉNÉRATEUR STYLE MANAWA ============
+function genererPostManawa(sujet, domaine) {
+    const d = DOMAINES[domaine] || DOMAINES['odoo'];
+    
+    // Analyser le sujet pour déterminer le type de post
+    const sujetLower = sujet.toLowerCase();
+    let type = 'definition';
+    if (sujetLower.includes('vs') || sujetLower.includes('compar')) type = 'comparatif';
+    if (sujetLower.includes('astuce') || sujetLower.includes('conseil')) type = 'astuce';
+    if (sujetLower.includes('pourquoi') || sujetLower.includes('avantage')) type = 'avantages';
+    
+    const posts = {
+        comparatif: `${d.emoji} ${sujet.toUpperCase()}
+
+La version simple pour comprendre :
+
+${d.emoji} PARTIE 1
+→ Explication simple et courte
+→ Exemple concret du quotidien
+→ Comment ça s'applique en Côte d'Ivoire
+
+${d.emoji} PARTIE 2
+→ Deuxième concept expliqué simplement
+→ Exemple : un cas réel d'entreprise
+→ Différence clé avec la Partie 1
+
+${d.emoji} PARTIE 3 (si applicable)
+→ Troisième niveau de compréhension
+→ Exemple parlant pour tous
+
+🎯 LA RÈGLE D'OR :
+[Phrase choc qui résume la différence principale]
+
+🧠 POUR RETENIR :
+* Concept 1 = [analogie simple]
+* Concept 2 = [analogie simple]
+* Concept 3 = [analogie simple]
+
+💡 ASTUCE MANAWA :
+[Un conseil pratique que le lecteur peut appliquer aujourd'hui]
+
+#ManawaTechs #InformatiqueCI #${d.nom.replace(/ /g,'')} #TechPourTous`,
+
+        astuce: `💡 ASTUCE ${d.nom.toUpperCase()}
+
+${d.emoji} ${sujet}
+
+📌 ÉTAPE 1 :
+→ Action simple à réaliser
+→ Ne prenez que 2 minutes
+
+📌 ÉTAPE 2 :
+→ Suite de l'action
+→ Résultat visible immédiatement
+
+📌 ÉTAPE 3 :
+→ Finalisation
+→ Vous avez réussi ! 🎉
+
+🎯 RÉSULTAT :
+Ce que vous obtenez après ces étapes
+
+⚠️ ERREUR COURANTE :
+Ce qu'il ne faut PAS faire
+
+💡 CONSEIL MANAWA :
+[Astuce bonus pour aller plus loin]
+
+#ManawaTechs #AstuceInfo #${d.nom.replace(/ /g,'')} #TechAfrique`,
+
+        avantages: `🚀 POURQUOI CHOISIR ${d.nom.toUpperCase()} ?
+
+${d.emoji} ${sujet}
+
+✅ AVANTAGE 1 :
+→ Bénéfice concret
+→ Impact sur votre travail
+
+✅ AVANTAGE 2 :
+→ Gain de temps ou d'argent
+→ Exemple chiffré
+
+✅ AVANTAGE 3 :
+→ Sécurité ou fiabilité
+→ Témoignage client
+
+📊 COMPARAISON :
+AVANT → Situation sans ${d.nom}
+APRÈS → Situation avec ${d.nom}
+
+🎯 LE SAVIEZ-VOUS ?
+[Statistique ou fait surprenant]
+
+💰 BÉNÉFICE CONCRET :
+[Gain en FCFA, en heures, en productivité]
+
+#ManawaTechs #${d.nom.replace(/ /g,'')} #Innovation #TechCI`,
+
+        definition: `📖 ${sujet.toUpperCase()} - EXPLIQUÉ SIMPLEMENT
+
+${d.emoji} DÉFINITION :
+→ Explication en une phrase simple
+→ Comme si vous l'expliquiez à un enfant
+
+📋 CARACTÉRISTIQUES :
+✅ Point clé 1
+✅ Point clé 2
+✅ Point clé 3
+
+🌍 EXEMPLE CONCRET :
+→ Situation réelle en Côte d'Ivoire
+→ Comment ça s'utilise au quotidien
+
+🔄 COMMENT ÇA MARCHE :
+1. Étape simple
+2. Étape simple
+3. Résultat
+
+🎯 À RETENIR :
+La phrase la plus importante à mémoriser
+
+💡 POUR ALLER PLUS LOIN :
+[Conseil ou ressource supplémentaire]
+
+#ManawaTechs #InformatiqueCI #${d.nom.replace(/ /g,'')} #Apprendre`
+    };
+    
+    return posts[type] || posts.definition;
+}
+
+// ============ RECONNAISSANCE VOCALE ============
+let recognition = null;
+let isListening = false;
+let conversationHistory = [];
+
+function initVoice() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        return false;
+    }
+    
+    recognition = new SpeechRecognition();
+    recognition.lang = 'fr-FR';
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    
+    recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        document.getElementById('voiceText').textContent = '"' + transcript + '"';
+        document.getElementById('micBtn').classList.remove('listening');
+        document.getElementById('micBtn').classList.add('processing');
+        document.getElementById('micStatus').textContent = '🤔 Analyse...';
+        document.getElementById('micStatus').className = 'mic-status processing';
+        
+        setTimeout(() => traiterCommande(transcript), 1000);
+    };
+    
+    recognition.onerror = function(event) {
+        stopListening();
+        document.getElementById('voiceText').textContent = '❌ ' + event.error;
+    };
+    
+    recognition.onend = function() {
+        if (isListening) {
+            document.getElementById('micBtn').classList.remove('listening');
+            document.getElementById('micStatus').textContent = 'Cliquez pour parler';
+            document.getElementById('micStatus').className = 'mic-status';
+            isListening = false;
+        }
+    };
+    
+    return true;
+}
+
+function toggleMicrophone() {
+    if (!recognition) {
+        const ok = initVoice();
+        if (!ok) {
+            alert('La reconnaissance vocale n\'est pas supportée par votre navigateur. Utilisez Chrome.');
+            return;
+        }
+    }
+    
+    if (isListening) {
+        stopListening();
+    } else {
+        startListening();
+    }
+}
+
+function startListening() {
+    try {
+        recognition.start();
+        isListening = true;
+        document.getElementById('micBtn').classList.add('listening');
+        document.getElementById('micStatus').textContent = '🎤 Écoute... Parlez maintenant';
+        document.getElementById('micStatus').className = 'mic-status listening';
+        document.getElementById('voiceText').textContent = '...';
+    } catch(e) {
+        console.error(e);
+    }
+}
+
+function stopListening() {
+    try { recognition.stop(); } catch(e) {}
+    isListening = false;
+    document.getElementById('micBtn').classList.remove('listening','processing');
+    document.getElementById('micStatus').textContent = 'Cliquez pour parler';
+    document.getElementById('micStatus').className = 'mic-status';
+}
+
+// ============ TRAITEMENT DES COMMANDES ============
+function traiterCommande(transcript) {
+    const texte = transcript.toLowerCase();
+    conversationHistory.push({role:'user',texte:transcript,date:new Date().toISOString()});
+    
+    // Détecter le domaine
+    let domaineDetecte = 'odoo';
+    for (const [key, d] of Object.entries(DOMAINES)) {
+        for (const mot of d.mots) {
+            if (texte.includes(mot)) {
+                domaineDetecte = key;
+                break;
+            }
+        }
+        if (domaineDetecte !== 'odoo') break;
+    }
+    
+    // Détecter l'intention
+    let action = 'generer';
+    if (texte.includes('planifie') || texte.includes('programme') || texte.includes('plus tard')) action = 'planifier';
+    if (texte.includes('image') || texte.includes('illustration') || texte.includes('photo')) action = 'image';
+    if (texte.includes('client') || texte.includes('prospect') || texte.includes('contact')) action = 'client';
+    if (texte.includes('stat') || texte.includes('analyse') || texte.includes('rapport')) action = 'stats';
+    if (texte.includes('idee') || texte.includes('suggestion') || texte.includes('propose')) action = 'idee';
+    
+    // Exécuter l'action
+    switch(action) {
+        case 'planifier':
+            planifierPublication(transcript, domaineDetecte);
+            break;
+        case 'image':
+            genererImage(transcript, domaineDetecte);
+            break;
+        case 'idee':
+            genererIdee(domaineDetecte);
+            break;
+        default:
+            genererPublication(transcript, domaineDetecte);
+    }
+}
+
+// ============ ACTIONS ============
+function genererPublication(transcript, domaine) {
+    const post = genererPostManawa(transcript, domaine);
+    const d = DOMAINES[domaine];
+    
+    conversationHistory.push({role:'ia',texte:'Post généré pour '+d.nom,date:new Date().toISOString()});
+    
+    document.getElementById('resultContainer').innerHTML = `
+        <div class="card" style="border-left:5px solid var(--blue);">
+            <div class="card-header">
+                <h3>✅ Post généré <span class="badge badge-blue">${d.nom}</span></h3>
+                <span class="badge badge-orange">Commande vocale</span>
+            </div>
+            <div class="manawa-post">${post}</div>
+            <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;">
+                <button class="btn btn-primary btn-sm" onclick="copy(this.parentElement.parentElement.querySelector('.manawa-post').textContent)">📋 Copier</button>
+                <button class="btn btn-orange btn-sm" onclick="whatsapp(this.parentElement.parentElement.querySelector('.manawa-post').textContent)">📱 WhatsApp</button>
+                <button class="btn btn-green btn-sm" onclick="planifierPost(this.parentElement.parentElement.querySelector('.manawa-post').textContent)">📅 Planifier</button>
+                <button class="btn btn-outline btn-sm" onclick="genererImagePourPost('${domaine}')">🖼️ +Image</button>
+            </div>
+        </div>`;
+    
+    document.getElementById('micBtn').classList.remove('processing');
+    document.getElementById('micStatus').textContent = '✅ Post généré ! Cliquez pour continuer';
+    document.getElementById('micStatus').className = 'mic-status';
+    
+    // Lire le résultat à voix haute
+    parler('Post généré pour ' + d.nom + '. ' + transcript.substring(0,50) + '...');
+}
+
+function planifierPublication(transcript, domaine) {
+    const maintenant = new Date();
+    const demain = new Date(maintenant);
+    demain.setDate(demain.getDate() + 1);
+    demain.setHours(19, 0, 0, 0);
+    
+    const dateStr = demain.toLocaleDateString('fr-FR') + ' à 19h00';
+    const post = genererPostManawa(transcript, domaine);
+    
+    document.getElementById('resultContainer').innerHTML = `
+        <div class="card" style="border-left:5px solid var(--green);">
+            <div class="card-header"><h3>📅 Publication planifiée</h3></div>
+            <p>📆 <strong>${dateStr}</strong></p>
+            <p>📂 <strong>${DOMAINES[domaine].nom}</strong></p>
+            <div class="manawa-post" style="max-height:200px;overflow-y:auto;font-size:12px;margin-top:12px;">${post.substring(0,200)}...</div>
+            <button class="btn btn-outline btn-sm mt-2" onclick="alert('✅ Rappel activé pour ${dateStr}')">🔔 Activer le rappel</button>
+        </div>`;
+    
+    document.getElementById('micBtn').classList.remove('processing');
+    document.getElementById('micStatus').textContent = '✅ Planifié pour ' + dateStr;
+    document.getElementById('micStatus').className = 'mic-status';
+    parler('Publication planifiée pour demain 19 heures.');
+}
+
+function genererImage(transcript, domaine) {
+    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent('MANAWA TECHS '+transcript+' '+DOMAINES[domaine].nom+' blue orange professional illustration')}?width=1080&height=1080&nologo=true`;
+    
+    document.getElementById('resultContainer').innerHTML = `
+        <div class="card" style="border-left:5px solid var(--orange);">
+            <div class="card-header"><h3>🖼️ Image générée</h3></div>
+            <img src="${url}" style="max-width:100%;border-radius:12px;" onerror="this.src='https://via.placeholder.com/500x500/F3F4F6/6B7280?text=Image'">
+            <div style="display:flex;gap:8px;margin-top:12px;">
+                <button class="btn btn-primary btn-sm" onclick="window.open('${url}')">🔗 Ouvrir</button>
+                <button class="btn btn-orange btn-sm" onclick="whatsapp('🖼️ Illustration MANAWA TECHS - ${transcript} ${url}')">📱 Partager</button>
+            </div>
+        </div>`;
+    document.getElementById('micBtn').classList.remove('processing');
+    document.getElementById('micStatus').textContent = '✅ Image générée !';
+    document.getElementById('micStatus').className = 'mic-status';
+    parler('Image générée pour ' + transcript);
+}
+
+function genererIdee(domaine) {
+    const idees = [
+        `Les 5 avantages de ${DOMAINES[domaine].nom} expliqués simplement`,
+        `${DOMAINES[domaine].nom} : Les erreurs à éviter absolument`,
+        `Comment ${DOMAINES[domaine].nom} peut transformer votre entreprise`,
+        `Débutant en ${DOMAINES[domaine].nom} ? Commencez par ça`,
+        `${DOMAINES[domaine].nom} : Le guide complet pour 2026`
+    ];
+    const idee = idees[Math.floor(Math.random() * idees.length)];
+    
+    document.getElementById('resultContainer').innerHTML = `
+        <div class="card" style="border-left:5px solid var(--purple);">
+            <h3>💡 Idée suggérée</h3>
+            <div class="manawa-post">${idee}</div>
+            <button class="btn btn-primary btn-sm mt-2" onclick="genererPublication('${idee}','${domaine}')">✍️ Créer ce post</button>
+        </div>`;
+    document.getElementById('micBtn').classList.remove('processing');
+    document.getElementById('micStatus').textContent = '💡 Idée : ' + idee;
+    document.getElementById('micStatus').className = 'mic-status';
+    parler('Idée suggérée : ' + idee);
+}
+
+// ============ FONCTIONS ANNEXES ============
+function genererImagePourPost(domaine) {
+    const url = `https://image.pollinations.ai/prompt/${encodeURIComponent('MANAWA TECHS '+DOMAINES[domaine].nom+' educational illustration professional')}?width=1080&height=1080&nologo=true`;
+    const container = document.getElementById('resultContainer');
+    container.insertAdjacentHTML('beforeend',`<img src="${url}" style="max-width:300px;border-radius:12px;margin-top:12px;display:block;">`);
+}
+
+function planifierPost(contenu) {
+    const date = prompt('📅 Date et heure (ex: 2026-06-20 19:00) :');
+    if (date) {
+        document.getElementById('resultContainer').insertAdjacentHTML('afterbegin',`<div class="card" style="border-left:5px solid var(--green);"><p>📅 <strong>Planifié pour ${date}</strong></p></div>`);
+    }
+}
+
+// ============ SYNTHÈSE VOCALE ============
+function parler(texte) {
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(texte);
+        utterance.lang = 'fr-FR';
+        utterance.rate = 1;
+        speechSynthesis.speak(utterance);
+    }
+}
+
+// ============ CHAT ============
+function envoyerMessage() {
+    const input = document.getElementById('chatInput');
+    const texte = input.value.trim();
+    if (!texte) return;
+    
+    const chatBox = document.getElementById('chatBox');
+    chatBox.innerHTML += `<div class="chat-msg user">${texte}</div>`;
+    
+    const domaineDetecte = Object.entries(DOMAINES).find(([k,d]) => d.mots.some(m=>texte.toLowerCase().includes(m)))?.[0] || 'odoo';
+    const post = genererPostManawa(texte, domaineDetecte);
+    
+    setTimeout(() => {
+        chatBox.innerHTML += `<div class="chat-msg ia">✅ Post généré pour <strong>${DOMAINES[domaineDetecte].nom}</strong> !<br><br>${post.substring(0,300)}...<br><br><em>Dites "publier" pour envoyer, "planifier" pour programmer, ou "image" pour une illustration.</em></div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }, 800);
+    
+    input.value = '';
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// ============ UTILS ============
+function copy(t) { navigator.clipboard.writeText(t).then(()=>alert('✅ Copié !')); }
+function whatsapp(m) { window.open('https://web.whatsapp.com/send?text='+encodeURIComponent(m),'_blank'); }
+function toast(m) { const t=document.createElement('div');t.style.cssText='position:fixed;bottom:20px;right:20px;background:#111827;color:white;padding:10px 18px;border-radius:8px;font-weight:600;font-size:12px;z-index:9999;';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),3000); }
+
+// ============ PAGES ============
+function nav(page) {
+    document.querySelectorAll('.nav-item').forEach(i=>i.classList.remove('active'));
+    event?.target?.closest('.nav-item')?.classList.add('active');
+    const main = document.getElementById('mainContent');
+    
+    const pages = {
+        vocal: () => main.innerHTML = `
+            <div class="topbar"><h1>🎤 Assistant Vocal MANAWA</h1><p>Parlez pour créer des posts, planifier, générer des images...</p></div>
+            <div class="grid-2">
+                <div class="card" style="text-align:center;">
+                    <h3 style="margin-bottom:16px;">🎙️ Commandez à la voix</h3>
+                    <button class="mic-btn" id="micBtn" onclick="toggleMicrophone()">🎤</button>
+                    <p class="mic-status" id="micStatus">Cliquez pour parler</p>
+                    <p style="margin-top:10px;font-size:18px;font-weight:600;color:var(--gray-700);min-height:28px;" id="voiceText"></p>
+                    <div class="highlight blue" style="text-align:left;margin-top:16px;">
+                        <strong>🗣️ Exemples de commandes :</strong><br>
+                        • "Crée un post sur Odoo ERP pour les PME"<br>
+                        • "Explique la différence entre HTTP et HTTPS"<br>
+                        • "Planifie une publication sur la cybersécurité"<br>
+                        • "Génère une image pour le développement web"<br>
+                        • "Donne-moi une idée de post"
+                    </div>
+                </div>
+                <div id="resultContainer">
+                    <div class="card"><p style="color:var(--gray-500);text-align:center;padding:40px;">🎤 Cliquez sur le microphone et parlez...</p></div>
+                </div>
+            </div>`,
+        
+        chat: () => main.innerHTML = `
+            <div class="topbar"><h1>💬 Chat IA Style MANAWA</h1><p>Écrivez votre sujet, l'IA génère le post</p></div>
+            <div class="card">
+                <div class="chat-box" id="chatBox">
+                    <div class="chat-msg ia">👋 Bonjour ! Je suis l'assistant MANAWA TECHS.<br><br>Dites-moi quel sujet vous voulez traiter :<br>• Un comparatif (ex: "HTTP vs HTTPS")<br>• Une astuce (ex: "Astuce Excel")<br>• Une définition (ex: "C'est quoi Odoo ?")<br>• Des avantages (ex: "Pourquoi Linux ?")</div>
+                </div>
+                <div class="chat-input-row">
+                    <input class="form-control" id="chatInput" placeholder="Écrivez votre sujet..." onkeypress="if(event.key==='Enter')envoyerMessage()">
+                    <button class="btn btn-primary" onclick="envoyerMessage()">➤</button>
+                </div>
+            </div>`,
+        
+        historique: () => {
+            let html = `<div class="topbar"><h1>🕐 Historique des commandes</h1><p>${conversationHistory.length} interactions</p></div><div class="card">`;
+            if (conversationHistory.length === 0) {
+                html += '<p style="color:var(--gray-500);text-align:center;padding:20px;">Aucune interaction. Utilisez l\'assistant vocal !</p>';
+            } else {
+                html += conversationHistory.map(h => `<div class="history-item"><strong>${h.role==='user'?'🎤 Vous':'🤖 IA'}</strong> - ${new Date(h.date).toLocaleTimeString()}<br>${h.texte.substring(0,80)}...</div>`).join('');
+            }
+            html += '</div>';
+            main.innerHTML = html;
+        },
+        
+        domaines: () => main.innerHTML = `
+            <div class="topbar"><h1>📂 Tous les domaines</h1><p>${Object.keys(DOMAINES).length} domaines disponibles</p></div>
+            <div class="grid-2">${Object.entries(DOMAINES).map(([k,d]) => `<div class="card" onclick="genererPublication('Explique ${d.nom} simplement','${k}');nav('vocal')" style="cursor:pointer;"><h3>${d.emoji} ${d.nom}</h3><p style="color:var(--gray-500);font-size:12px;">Mots-clés : ${d.mots.join(', ')}</p><button class="btn btn-outline btn-sm mt-2">Générer un post</button></div>`).join('')}</div>`,
+        
+        planning: () => main.innerHTML = `
+            <div class="topbar"><h1>📅 Planification</h1></div>
+            <div class="card"><h3>📋 Posts planifiés</h3><p style="color:var(--gray-500);">Utilisez la commande vocale "Planifie une publication..."</p></div>
+            <div class="grid-3"><div class="card" style="text-align:center;"><h3>🌅 7h-9h</h3><p style="color:var(--green);">+25%</p></div><div class="card" style="text-align:center;"><h3>☀️ 12h-14h</h3><p>Pause</p></div><div class="card" style="text-align:center;"><h3>🌙 19h-21h</h3><p style="color:var(--green);">⭐ Pic</p></div></div>`
+    };
+    
+    if (pages[page]) pages[page]();
+}
+
+// ============ INIT ============
+nav('vocal');
+
+// Raccourci clavier pour le micro
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'm' && e.ctrlKey) {
+        e.preventDefault();
+        toggleMicrophone();
+    }
+});
+</script>
+</body>
+</html>

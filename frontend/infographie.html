@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANAWA TECHS - Infographies Pro</title>
+    <style>
+        :root {
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --border: #e2e8f0;
+            --blue: #2563eb;
+            --blue-dark: #1e40af;
+            --green: #16a34a;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --radius: 16px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+            --shadow-lg: 0 4px 24px rgba(0,0,0,0.12);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+            color: white;
+            padding: 28px 20px;
+            text-align: center;
+            border-bottom: 3px solid #16a34a;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 { font-size: 24px; margin-bottom: 4px; }
+        .header p { opacity: 0.9; font-size: 13px; }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        /* LAYOUT */
+        .layout {
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .layout { grid-template-columns: 1fr; }
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .panel {
+            background: var(--card);
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .panel h3 {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .template-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .template-item {
+            padding: 12px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .template-item:hover {
+            background: #f0f7ff;
+            border-color: #bfdbfe;
+        }
+
+        .template-item.active {
+            background: #eff6ff;
+            border-color: #2563eb;
+            color: #1e40af;
+            font-weight: 600;
+        }
+
+        .template-item .icon { font-size: 22px; }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+            transition: 0.2s;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            box-shadow: 0 4px 16px rgba(37,99,235,0.3);
+        }
+
+        .btn-outline {
+            background: white;
+            border: 2px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+        }
+
+        /* RESULTS */
+        .results-area {
+            min-height: 400px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .results-header h2 {
+            font-size: 18px;
+            color: var(--text);
+        }
+
+        .results-count {
+            font-size: 13px;
+            color: var(--text-muted);
+            background: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .infographie-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+            transition: all 0.3s;
+        }
+
+        .infographie-card:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        .infographie-card .card-label {
+            padding: 12px 20px;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .infographie-card img {
+            width: 100%;
+            display: block;
+            background: #fff;
+        }
+
+        .infographie-card .card-actions {
+            padding: 12px 16px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            border-top: 1px solid var(--border);
+            background: #fafafa;
+        }
+
+        .btn-sm {
+            padding: 7px 14px;
+            font-size: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.15s;
+            white-space: nowrap;
+        }
+
+        .btn-sm:hover {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+        .btn-sm.primary { background: #2563eb; color: white; border-color: #2563eb; }
+        .btn-sm.green { background: #16a34a; color: white; border-color: #16a34a; }
+        .btn-sm.whatsapp { background: #25D366; color: white; border-color: #25D366; }
+
+        .quality-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .quality-high { background: #dcfce7; color: #166534; }
+        .quality-medium { background: #fef9c3; color: #854d0e; }
+
+        .loading-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-muted);
+        }
+
+        .loading-state .spinner {
+            width: 44px;
+            height: 44px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #2563eb;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1e293b;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(60px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>📊 MANAWA TECHS - Générateur d'Infographies</h1>
+        <p>Créez des infographies réalistes, structurées et professionnelles pour votre chaîne WhatsApp</p>
+    </div>
+
+    <div class="container">
+        <div class="layout">
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+                <div class="panel">
+                    <h3>📋 Template</h3>
+                    <div class="template-list" id="templateList">
+                        <div class="template-item active" data-template="ip">
+                            <span class="icon">🌐</span> Public IP vs Private IP
+                        </div>
+                        <div class="template-item" data-template="programme">
+                            <span class="icon">💻</span> Programme vs Logiciel
+                        </div>
+                        <div class="template-item" data-template="odoo">
+                            <span class="icon">📊</span> Odoo ERP
+                        </div>
+                        <div class="template-item" data-template="securite">
+                            <span class="icon">🔒</span> Cybersécurité
+                        </div>
+                        <div class="template-item" data-template="formation">
+                            <span class="icon">🎓</span> Formation IT
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <h3>⚙️ Configuration</h3>
+                    <div class="form-group">
+                        <label>Titre</label>
+                        <input type="text" id="titre" value="PUBLIC IP vs PRIVATE IP">
+                    </div>
+                    <div class="form-group">
+                        <label>Format</label>
+                        <select id="format">
+                            <option value="1080x1920">Story (9:16)</option>
+                            <option value="1080x1350">Portrait (4:5)</option>
+                            <option value="1080x1080">Carré (1:1)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Style</label>
+                        <select id="styleSelect">
+                            <option value="professional corporate">Corporate Professionnel</option>
+                            <option value="modern clean">Moderne Épuré</option>
+                            <option value="educational textbook">Style Manuel Éducatif</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" onclick="generer()">
+                        🎨 Générer l'infographie
+                    </button>
+                </div>
+
+                <button class="btn btn-outline" onclick="generer()">
+                    🔄 Régénérer de nouvelles variantes
+                </button>
+            </aside>
+
+            <!-- RESULTS -->
+            <div class="results-area" id="resultsArea">
+                <div class="results-header">
+                    <h2>🖼️ Infographies générées</h2>
+                    <span class="results-count" id="resultsCount">3 variantes</span>
+                </div>
+                <div id="results"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let currentTemplate = 'ip';
+
+        // Données des templates
+        const templatesData = {
+            ip: {
+                titre: 'PUBLIC IP vs PRIVATE IP',
+                sections: [
+                    { title: 'PUBLIC IP ADDRESS', color: '#2563eb', icon: '🌐', items: ['Unique address assigned by ISP', 'Accessible globally on Internet', 'Example: 203.0.113.10, 8.8.8.8', 'Used for: Web Hosting, Cloud, Email'] },
+                    { title: 'PRIVATE IP ADDRESS', color: '#16a34a', icon: '🏠', items: ['Local address within private network', 'Not accessible from Internet', 'RFC 1918: 10.x, 172.16.x, 192.168.x', 'Used for: Home, Office, IoT devices'] },
+                    { title: 'COMPARISON TABLE', color: '#6366f1', icon: '📊', items: ['Public: Global scope, Unique, ISP-assigned', 'Private: Local scope, Reusable, Router-assigned'] },
+                    { title: 'HOW NAT WORKS', color: '#f59e0b', icon: '🔄', items: ['Private IPs (LAN) → NAT Router → Public IP → Internet'] },
+                    { title: 'ANALOGY', color: '#8b5cf6', icon: '💡', items: ['Public IP = Home Address (visible to world)', 'Private IP = Room Numbers (only inside house)'] }
+                ]
+            },
+            programme: {
+                titre: 'PROGRAMME vs LOGICIEL vs APPLICATION',
+                sections: [
+                    { title: '🔧 PROGRAMME', color: '#2563eb', items: ['Une seule instruction', 'Exemple : code qui additionne 2+3', 'La brique de base'] },
+                    { title: '📦 LOGICIEL', color: '#16a34a', items: ['Plusieurs programmes ensemble', 'Exemple : Microsoft Word, Photoshop', 'Un mur de briques'] },
+                    { title: '📱 APPLICATION', color: '#f59e0b', items: ['Logiciel simple, souvent mobile', 'Exemple : WhatsApp, TikTok', 'Maison préfabriquée prête à l\'emploi'] },
+                    { title: '🎯 RÈGLE D\'OR', color: '#dc2626', items: ['Application ⊂ Logiciel', 'Tous les logiciels ne sont pas des applications'] }
+                ]
+            },
+            odoo: {
+                titre: 'Odoo ERP - Avantages',
+                sections: [
+                    { title: '📊 MODULES', color: '#2563eb', items: ['CRM | Comptabilité | Stock | Ventes', 'RH | Fabrication | Marketing | Rapports'] },
+                    { title: '✅ AVANTAGES', color: '#16a34a', items: ['Une seule plateforme intégrée', 'Données centralisées en temps réel', 'Productivité augmentée de 30%', 'Accessible sur mobile'] },
+                    { title: '👥 POUR QUI ?', color: '#6366f1', items: ['🏢 PME | 🏭 Industries', '🛍️ Commerce | 💼 Services'] }
+                ]
+            },
+            securite: {
+                titre: 'Cybersécurité - 5 Règles d\'Or',
+                sections: [
+                    { title: '🔒 RÈGLE 1', color: '#2563eb', items: ['Mots de passe robustes : 12+ caractères'] },
+                    { title: '🔄 RÈGLE 2', color: '#16a34a', items: ['Mises à jour régulières de tous les logiciels'] },
+                    { title: '💾 RÈGLE 3', color: '#f59e0b', items: ['Sauvegardes automatiques quotidiennes'] },
+                    { title: '📧 RÈGLE 4', color: '#dc2626', items: ['Ne pas cliquer sur les liens suspects'] },
+                    { title: '🔐 RÈGLE 5', color: '#8b5cf6', items: ['Authentification à double facteur (2FA)'] }
+                ]
+            },
+            formation: {
+                titre: 'Formation IT - Parcours',
+                sections: [
+                    { title: '🎓 FORMATIONS', color: '#2563eb', items: ['Bureautique (Excel, Word)', 'Programmation (Python, JS)', 'Réseaux & Linux', 'Cybersécurité', 'IA & Data'] },
+                    { title: '💼 DÉBOUCHÉS', color: '#16a34a', items: ['Développeur Web', 'Admin Systèmes', 'Expert Cybersécurité', 'Data Analyst'] },
+                    { title: '📍 INFOS', color: '#6366f1', items: ['San-Pedro & Abidjan', '📞 +225 0797969475'] }
+                ]
+            }
+        };
+
+        // Initialisation
+        document.querySelectorAll('.template-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.template-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+                currentTemplate = this.dataset.template;
+                const data = templatesData[currentTemplate];
+                document.getElementById('titre').value = data.titre;
+            });
+        });
+
+        function construirePrompt(template, titre, style) {
+            const data = templatesData[template];
+            let sectionsText = '';
+            
+            data.sections.forEach((section, i) => {
+                sectionsText += `Section "${section.title}": ${section.items.join('. ')}. `;
+            });
+
+            const baseStyle = style === 'professional corporate' 
+                ? 'professional corporate infographic, white background, blue (#2563eb) headers, green (#16a34a) accents, clean geometric layout, realistic diagram style, subtle shadows on cards, organized grid structure, high quality, 4K resolution'
+                : style === 'modern clean'
+                ? 'modern clean infographic, white background, blue and green colors, minimalist design, organized layout with clear sections, flat icons, professional typography, well-structured'
+                : 'educational textbook infographic, white background, blue headers, structured layout, clear sections with borders, academic style, organized information, professional';
+
+            const prompt = `${baseStyle}, title "${titre}" centered at top in large bold blue text, each section clearly separated with colored header bars, icons for each section, bullet points with checkmarks, comparison elements, diagram with arrows, NAT flow illustration, realistic professional infographic for WhatsApp channel, Côte d'Ivoire tech education. Content structure: ${sectionsText}`;
+
+            return prompt;
+        }
+
+        async function generer() {
+            const titre = document.getElementById('titre').value;
+            const format = document.getElementById('format').value;
+            const style = document.getElementById('styleSelect').value;
+            const results = document.getElementById('results');
+
+            const [width, height] = format.split('x');
+
+            results.innerHTML = `
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p><strong>Création de vos infographies...</strong></p>
+                    <p style="font-size:13px;color:#94a3b8;">Génération de 3 variantes réalistes et structurées</p>
+                </div>
+            `;
+
+            const basePrompt = construirePrompt(currentTemplate, titre, style);
+
+            // 3 variantes avec angles différents
+            const prompts = [
+                `${basePrompt}, vertical stacked layout with clearly separated sections, each section in a rounded rectangle card, numbered sections, professional look`,
+                `${basePrompt}, side-by-side comparison layout, two-column design for Public vs Private, table with alternating blue and white rows, organized grid`,
+                `${basePrompt}, flow diagram layout, top-to-bottom structure with connecting arrows, NAT process flow, analogy section at bottom with house icons, comprehensive view`
+            ];
+
+            const labels = ['Layout Empilé', 'Layout Comparatif', 'Layout Diagramme'];
+
+            const images = prompts.map((prompt, i) => ({
+                url: `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=${width}&height=${height}&nologo=true&seed=${Math.floor(Math.random() * 50000) + i * 1000}`,
+                label: labels[i],
+                index: i
+            }));
+
+            // Afficher
+            results.innerHTML = images.map((img, i) => `
+                <div class="infographie-card">
+                    <div class="card-label">
+                        <span>
+                            <strong>Variante ${i+1}</strong> — ${img.label}
+                        </span>
+                        <span class="quality-badge quality-high">HD 4K</span>
+                    </div>
+                    <img src="${img.url}" 
+                         alt="Infographie ${titre} - ${img.label}"
+                         loading="${i === 0 ? 'eager' : 'lazy'}"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+                         style="min-height:400px;background:#fafafa;">
+                    <div style="display:none;align-items:center;justify-content:center;padding:60px;background:#fef2f2;color:#dc2626;">
+                        ⚠️ Image en cours de chargement... Actualisez si nécessaire.
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-sm primary" onclick="window.open('${img.url}')">🔍 Voir en grand</button>
+                        <button class="btn-sm" onclick="telecharger('${img.url}', 'manawa-${currentTemplate}-v${i+1}.png')">📥 Télécharger</button>
+                        <button class="btn-sm" onclick="copierLien('${img.url}')">📋 Copier lien</button>
+                        <button class="btn-sm whatsapp" onclick="partager('${img.url}', '${escapeJs(titre)}')">📱 WhatsApp</button>
+                    </div>
+                </div>
+            `).join('');
+
+            document.getElementById('resultsCount').textContent = '3 variantes générées';
+        }
+
+        function telecharger(url, nom) {
+            fetch(url).then(r => r.blob()).then(blob => {
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = nom;
+                a.click();
+            }).catch(() => window.open(url, '_blank'));
+        }
+
+        function copierLien(texte) {
+            navigator.clipboard.writeText(texte);
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = '✅ Lien copié dans le presse-papier !';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        function partager(url, titre) {
+            const msg = encodeURIComponent(`📊 ${titre}\n\n📸 Infographie MANAWA TECHS\n${url}\n\n🌐 manawatechs.web.app`);
+            window.open(`https://web.whatsapp.com/send?text=${msg}`, '_blank');
+        }
+
+        function escapeJs(s) {
+            return s.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"').replace(/\n/g, '\\n');
+        }
+
+        // Générer automatiquement
+        setTimeout(generer, 600);
+    </script>
+</body>
+</html>

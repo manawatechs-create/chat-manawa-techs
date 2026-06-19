@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANAWA TECHS PRO - Système Complet</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="MANAWA TECHS">
+    <meta name="theme-color" content="#2563EB">
+    <link rel="manifest" href="data:application/json,{}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --blue: #2563EB; --blue-dark: #1D4ED8; --blue-light: #DBEAFE; --blue-bg: #EFF6FF;
+            --orange: #F97316; --orange-dark: #EA580C; --orange-light: #FED7AA; --orange-bg: #FFF7ED;
+            --green: #16A34A; --red: #DC2626; --purple: #8B5CF6; --pink: #EC4899;
+            --white: #FFFFFF; --gray-50: #F9FAFB; --gray-100: #F3F4F6; --gray-200: #E5E7EB;
+            --gray-300: #D1D5DB; --gray-500: #6B7280; --gray-700: #374151; --gray-900: #111827;
+            --radius: 12px; --radius-lg: 16px; --shadow: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1); --transition: all 0.2s ease;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family:'Inter',sans-serif; background:var(--gray-50); color:var(--gray-900); min-height:100vh; font-size:14px; }
+        
+        /* LAYOUT */
+        .app { display:flex; min-height:100vh; }
+        .sidebar { width:240px; background:var(--white); border-right:1px solid var(--gray-200); position:fixed; height:100vh; overflow-y:auto; z-index:50; padding:16px 10px; }
+        .main { margin-left:240px; flex:1; padding:20px 24px; }
+        
+        .logo { display:flex; align-items:center; gap:8px; padding:8px 10px 16px; border-bottom:1px solid var(--gray-200); margin-bottom:12px; }
+        .logo-icon { width:34px;height:34px; background:linear-gradient(135deg,var(--orange),var(--blue)); border-radius:10px; display:flex;align-items:center;justify-content:center;color:white;font-size:16px;font-weight:700; }
+        .logo-text { font-weight:800; font-size:15px; }
+        .logo-sub { font-size:9px; color:var(--gray-500); display:block; text-transform:uppercase; letter-spacing:1px; }
+        
+        .nav-section { font-size:10px; text-transform:uppercase; letter-spacing:1.5px; color:var(--gray-500); padding:14px 10px 6px; font-weight:700; }
+        .nav-item { display:flex; align-items:center; gap:8px; padding:9px 10px; border-radius:8px; cursor:pointer; font-size:13px; color:var(--gray-700); transition:var(--transition); font-weight:500; margin-bottom:1px; }
+        .nav-item:hover { background:var(--gray-100); }
+        .nav-item.active { background:var(--blue-bg); color:var(--blue); font-weight:600; }
+        .nav-item i { font-size:16px; width:20px; text-align:center; }
+        .nav-badge { margin-left:auto; background:var(--red); color:white; font-size:9px; padding:2px 7px; border-radius:10px; font-weight:700; }
+        .nav-badge.new { background:var(--orange); }
+        
+        /* HEADER */
+        .topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
+        .topbar h1 { font-size:24px; font-weight:800; }
+        .topbar p { color:var(--gray-500); font-size:13px; }
+        .header-actions { display:flex; gap:8px; flex-wrap:wrap; }
+        
+        /* PAGES */
+        .page { display:none; animation:fadeIn 0.25s; }
+        .page.active { display:block; }
+        @keyframes fadeIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+        
+        /* COMPONENTS */
+        .stats-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px; margin-bottom:24px; }
+        .stat-card { background:var(--white); border:1px solid var(--gray-200); border-radius:var(--radius-lg); padding:18px 20px; cursor:pointer; transition:var(--transition); }
+        .stat-card:hover { border-color:var(--blue); box-shadow:var(--shadow-md); }
+        .stat-card .icon { width:40px;height:40px; border-radius:10px; display:flex;align-items:center;justify-content:center;font-size:20px; margin-bottom:10px; }
+        .stat-card.blue .icon { background:var(--blue-bg); color:var(--blue); }
+        .stat-card.orange .icon { background:var(--orange-bg); color:var(--orange); }
+        .stat-card.green .icon { background:#DCFCE7; color:var(--green); }
+        .stat-card.purple .icon { background:#F3E8FF; color:var(--purple); }
+        .stat-card .value { font-size:28px; font-weight:800; }
+        .stat-card .label { font-size:12px; color:var(--gray-500); }
+        .stat-card .trend { font-size:11px; font-weight:600; margin-top:4px; }
+        .trend-up { color:var(--green); }
+        
+        .card { background:var(--white); border:1px solid var(--gray-200); border-radius:var(--radius-lg); padding:20px; margin-bottom:16px; }
+        .card-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid var(--gray-100); }
+        .card-header h3 { font-size:15px; font-weight:700; }
+        
+        .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+        .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+        .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+        @media(max-width:900px){ .grid-2,.grid-3,.grid-4{grid-template-columns:1fr;} .sidebar{transform:translateX(-100%);} .main{margin-left:0;} }
+        
+        .btn { padding:9px 16px; border-radius:8px; font-weight:600; font-size:13px; cursor:pointer; transition:var(--transition); border:none; display:inline-flex;align-items:center;gap:6px; font-family:inherit; white-space:nowrap; }
+        .btn-primary { background:var(--blue); color:white; } .btn-primary:hover { background:var(--blue-dark); }
+        .btn-orange { background:var(--orange); color:white; } .btn-orange:hover { background:var(--orange-dark); }
+        .btn-green { background:var(--green); color:white; }
+        .btn-red { background:var(--red); color:white; }
+        .btn-outline { background:white; border:2px solid var(--gray-200); } .btn-outline:hover { border-color:var(--blue); }
+        .btn-sm { padding:5px 10px; font-size:11px; border-radius:6px; }
+        .btn-lg { padding:14px 24px; font-size:15px; }
+        .btn-block { width:100%; justify-content:center; }
+        
+        .form-group { margin-bottom:12px; }
+        .form-group label { display:block; font-weight:600; font-size:11px; color:var(--gray-500); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
+        .form-control,.form-select { width:100%; padding:10px 12px; border:2px solid var(--gray-200); border-radius:8px; font-size:13px; font-family:inherit; transition:var(--transition); }
+        .form-control:focus,.form-select:focus { outline:none; border-color:var(--blue); box-shadow:0 0 0 3px rgba(37,99,235,0.1); }
+        textarea.form-control { resize:vertical; min-height:80px; }
+        
+        .badge { display:inline-block; padding:3px 10px; border-radius:20px; font-size:10px; font-weight:600; }
+        .badge-blue { background:var(--blue-bg); color:var(--blue); }
+        .badge-orange { background:var(--orange-bg); color:var(--orange-dark); }
+        .badge-green { background:#DCFCE7; color:var(--green); }
+        .badge-red { background:#FEE2E2; color:var(--red); }
+        
+        .highlight { padding:12px 16px; border-radius:var(--radius); font-size:13px; margin-bottom:8px; }
+        .highlight.blue { background:var(--blue-bg); border:1px solid var(--blue-light); }
+        .highlight.orange { background:var(--orange-bg); border:1px solid var(--orange-light); }
+        
+        .post-box { background:var(--gray-50); border:1px solid var(--gray-200); border-radius:var(--radius); padding:18px; white-space:pre-wrap; line-height:1.7; font-size:14px; margin-top:12px; }
+        
+        .image-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:12px; }
+        .image-card { background:white; border:1px solid var(--gray-200); border-radius:var(--radius); overflow:hidden; }
+        .image-card img { width:100%; display:block; min-height:150px; background:var(--gray-100); }
+        .image-card .footer { padding:8px; display:flex; gap:4px; flex-wrap:wrap; }
+        
+        .pipeline-col { background:var(--gray-50); border-radius:var(--radius); padding:12px; min-height:200px; border:2px dashed var(--gray-200); }
+        .pipeline-col h4 { font-size:13px; margin-bottom:8px; }
+        .pipeline-card { background:white; padding:10px; border-radius:8px; margin-bottom:6px; border:1px solid var(--gray-200); cursor:grab; font-size:12px; }
+        
+        .toast-container { position:fixed; bottom:20px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:6px; }
+        .toast { background:var(--gray-900); color:white; padding:10px 18px; border-radius:8px; font-weight:600; font-size:12px; animation:slideIn 0.3s; }
+        .toast.success { border-left:3px solid var(--green); }
+        .toast.error { border-left:3px solid var(--red); }
+        @keyframes slideIn { from{transform:translateX(120%);opacity:0;} to{transform:translateX(0);opacity:1;} }
+        
+        canvas { max-width:100%; }
+        .chart-container { position:relative; height:300px; margin:16px 0; }
+        
+        /* MOBILE MENU */
+        .menu-toggle { display:none; position:fixed; top:12px; left:12px; z-index:100; background:var(--blue); color:white; border:none; width:40px;height:40px; border-radius:50%; font-size:20px; cursor:pointer; }
+        @media(max-width:900px){ .menu-toggle{display:flex;align-items:center;justify-content:center;} .sidebar.open{transform:translateX(0);} }
+    </style>
+</head>
+<body>
+
+<button class="menu-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+
+<div class="app">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="logo"><div class="logo-icon">⚡</div><div><span class="logo-text">MANAWA TECHS</span><span class="logo-sub">Studio Pro</span></div></div>
+        
+        <div class="nav-section">Création</div>
+        <div class="nav-item active" onclick="nav('create')"><i class="bi bi-stars"></i> Créer un post</div>
+        <div class="nav-item" onclick="nav('infographie')"><i class="bi bi-diagram-3"></i> Infographie</div>
+        <div class="nav-item" onclick="nav('carousel')"><i class="bi bi-images"></i> Carrousel<span class="nav-badge new">New</span></div>
+        <div class="nav-item" onclick="nav('video')"><i class="bi bi-camera-video"></i> Script Vidéo<span class="nav-badge new">New</span></div>
+        <div class="nav-item" onclick="nav('mediatheque')"><i class="bi bi-collection"></i> Médiathèque</div>
+        
+        <div class="nav-section">Automatisation</div>
+        <div class="nav-item" onclick="nav('planning')"><i class="bi bi-calendar-check"></i> Planification</div>
+        <div class="nav-item" onclick="nav('auto-reply')"><i class="bi bi-chat-dots"></i> Auto-réponses</div>
+        <div class="nav-item" onclick="nav('relances')"><i class="bi bi-arrow-repeat"></i> Relances auto</div>
+        
+        <div class="nav-section">CRM & Ventes</div>
+        <div class="nav-item" onclick="nav('pipeline')"><i class="bi bi-diagram-3"></i> Pipeline CRM</div>
+        <div class="nav-item" onclick="nav('devis')"><i class="bi bi-file-text"></i> Devis & Factures</div>
+        <div class="nav-item" onclick="nav('clients')"><i class="bi bi-people"></i> Prospects</div>
+        
+        <div class="nav-section">Analytics</div>
+        <div class="nav-item" onclick="nav('analytics')"><i class="bi bi-graph-up-arrow"></i> Statistiques</div>
+        <div class="nav-item" onclick="nav('heatmap')"><i class="bi bi-grid-3x3"></i> Heatmap</div>
+        
+        <div class="nav-section">Engagement</div>
+        <div class="nav-item" onclick="nav('quiz')"><i class="bi bi-patch-question"></i> Quiz<span class="nav-badge new">New</span></div>
+        <div class="nav-item" onclick="nav('formations')"><i class="bi bi-mortarboard"></i> Formations</div>
+        <div class="nav-item" onclick="nav('marketing')"><i class="bi bi-megaphone"></i> Marketing</div>
+        
+        <div class="nav-section">Système</div>
+        <div class="nav-item" onclick="nav('settings')"><i class="bi bi-gear"></i> Paramètres</div>
+        <div class="nav-item" onclick="nav('users')"><i class="bi bi-shield-lock"></i> Sécurité</div>
+    </aside>
+    
+    <!-- MAIN -->
+    <main class="main" id="mainContent"></main>
+</div>
+
+<div class="toast-container" id="toasts"></div>
+
+<script>
+// ============ DATA STORE (simulé) ============
+const DB = {
+    posts: [],
+    clients: [
+        {id:1,nom:'Kouassi',prenom:'Jean',tel:'+22501020304',type:'PME',statut:'prospect',score:85,historique:[]},
+        {id:2,nom:'Koné',prenom:'Marie',tel:'+22501020305',type:'Commerçant',statut:'contacté',score:60,historique:[]},
+        {id:3,nom:'Yao',prenom:'Paul',tel:'+22501020306',type:'Particulier',statut:'client',score:95,historique:[]}
+    ],
+    pipeline: [
+        {id:1,nom:'Prospect',clients:[1]},
+        {id:2,nom:'Contacté',clients:[2]},
+        {id:3,nom:'Devis envoyé',clients:[]},
+        {id:4,nom:'Négociation',clients:[]},
+        {id:5,nom:'Client',clients:[3]}
+    ],
+    scheduledPosts: [],
+    autoReplies: [
+        {mot:'prix',reponse:'Nos prix varient selon le service. Quel service vous intéresse ? 📞 +225 0797969475'},
+        {mot:'formation',reponse:'Nous proposons des formations en : Bureautique, Programmation, Réseaux, Sécurité, IA. Laquelle vous intéresse ?'},
+        {mot:'devis',reponse:'Je peux vous faire un devis gratuit. Décrivez votre besoin svp.'}
+    ],
+    mediatheque: [],
+    formations: [
+        {nom:'Bureautique',duree:'4 semaines',prix:50000,inscrits:12},
+        {nom:'Programmation Web',duree:'8 semaines',prix:150000,inscrits:8},
+        {nom:'Cybersécurité',duree:'6 semaines',prix:200000,inscrits:5}
+    ]
+};
+
+// ============ NAVIGATION ============
+function nav(page) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    event?.target?.closest('.nav-item')?.classList.add('active');
+    renderPage(page);
+}
+
+function renderPage(page) {
+    const main = document.getElementById('mainContent');
+    const pages = {
+        create: renderCreate, infographie: renderInfographie, carousel: renderCarousel,
+        video: renderVideo, mediatheque: renderMediatheque, planning: renderPlanning,
+        'auto-reply': renderAutoReply, relances: renderRelances, pipeline: renderPipeline,
+        devis: renderDevis, clients: renderClients, analytics: renderAnalytics,
+        heatmap: renderHeatmap, quiz: renderQuiz, formations: renderFormations,
+        marketing: renderMarketing, settings: renderSettings, users: renderUsers
+    };
+    if (pages[page]) { main.innerHTML = ''; pages[page](main); }
+}
+
+// ============ CREATE ============
+function renderCreate(main) {
+    main.innerHTML = `
+        <div class="topbar"><div><h1>✍️ Créer une publication</h1><p>Générez du contenu viral pour votre chaîne</p></div>
+            <div class="header-actions"><button class="btn btn-orange btn-sm" onclick="genererIdee()">🎲 Idée aléatoire</button></div></div>
+        <div class="grid-2">
+            <div class="card"><h3 style="margin-bottom:12px;">🎯 Type de contenu</h3>
+                <div class="grid-3" id="typeBtns">
+                    <button class="btn btn-primary btn-block" onclick="selType('astuce',this)">💡 Astuce</button>
+                    <button class="btn btn-outline btn-block" onclick="selType('comparatif',this)">📊 Comparatif</button>
+                    <button class="btn btn-outline btn-block" onclick="selType('definition',this)">📖 Définition</button>
+                    <button class="btn btn-outline btn-block" onclick="selType('tuto',this)">📝 Tutoriel</button>
+                    <button class="btn btn-outline btn-block" onclick="selType('promo',this)">📢 Promo</button>
+                    <button class="btn btn-outline btn-block" onclick="selType('engagement',this)">💬 Engagement</button>
+                </div></div>
+            <div class="card"><h3 style="margin-bottom:12px;">⚙️ Configuration</h3>
+                <div class="form-group"><label>Domaine</label><select class="form-select" id="domaine"><option>odoo</option><option>web</option><option>ia</option><option>formation</option><option>securite</option><option>linux</option></select></div>
+                <div class="form-group"><label>Instructions</label><input class="form-control" id="instructions" placeholder="Ex: Mentionner San-Pedro..."></div>
+                <button class="btn btn-primary btn-block btn-lg" onclick="genPost()">🚀 Générer</button>
+                <button class="btn btn-orange btn-block mt-2" onclick="genPostImage()">🎨 Post + Image</button>
+                <button class="btn btn-outline btn-block mt-1" onclick="genABTest()">🔬 A/B Test (2 versions)</button></div>
+        </div>
+        <div id="postRes"></div>`;
+}
+
+let currentType = 'astuce';
+function selType(t, btn) { currentType = t; btn.parentElement.querySelectorAll('.btn').forEach(b => { b.classList.remove('btn-primary'); b.classList.add('btn-outline'); }); btn.classList.add('btn-primary'); btn.classList.remove('btn-outline'); }
+
+function genPost() {
+    const d = document.getElementById('domaine').value;
+    const posts = {odoo:'💼 Centralisez stocks, ventes et compta avec Odoo ERP. Gain de temps garanti !\n\n👉 Contactez MANAWA TECHS\n📞 +225 0797969475',web:'🌐 Créez votre site web professionnel et attirez plus de clients en 2026.\n\n📞 +225 0797969475',ia:'🤖 L\'IA peut automatiser 30% de vos tâches. Découvrez comment !\n\n📞 +225 0797969475',formation:'🎓 Boostez votre carrière avec nos formations IT certifiantes.\n\n📍 San-Pedro & Abidjan\n📞 +225 0797969475'};
+    document.getElementById('postRes').innerHTML = `<div class="card" style="border-left:4px solid var(--blue);"><h3>✅ Post ${currentType}</h3><div class="post-box">${posts[d]||'Post généré pour '+d}</div>
+        <div class="mt-2" style="display:flex;gap:6px;flex-wrap:wrap;"><button class="btn btn-primary btn-sm" onclick="copy('${esc(posts[d]||'')}')">📋 Copier</button>
+        <button class="btn btn-orange btn-sm" onclick="whatsapp('${esc(posts[d]||'')}')">📱 WhatsApp</button>
+        <button class="btn btn-green btn-sm" onclick="planifierPost('${esc(posts[d]||'')}')">📅 Planifier</button>
+        <button class="btn btn-outline btn-sm" onclick="genPost()">🔄 Régénérer</button></div></div>`;
+    toast('✅ Post généré !');
+}
+
+function genPostImage() { genPost(); setTimeout(async () => { const d = document.getElementById('domaine').value; const url = `https://image.pollinations.ai/prompt/${encodeURIComponent('MANAWA TECHS '+d+' professional illustration')}?width=1024&height=1024&nologo=true`; document.getElementById('postRes').insertAdjacentHTML('beforeend',`<img src="${url}" style="max-width:100%;border-radius:12px;margin-top:12px;">`); DB.mediatheque.push({url,theme:d,date:new Date().toISOString()}); }, 1500); }
+
+function genABTest() { genPost(); document.getElementById('postRes').insertAdjacentHTML('beforeend','<div class="highlight orange mt-3">🔬 <strong>Variante B</strong> (test A/B) : Même contenu avec une accroche différente. Publiez les deux et comparez les résultats !</div>'); }
+
+function planifierPost(contenu) { const date = prompt('📅 Date et heure (ex: 2026-06-20 19:00) :'); if (date) { DB.scheduledPosts.push({contenu,date,statut:'planifié'}); toast('📅 Post planifié pour le '+date); } }
+
+// ============ INFOGRAPHIE ============
+function renderInfographie(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>📊 Infographie</h1><p>Créez des visuels professionnels</p></div></div>
+        <div class="grid-2"><div class="card"><h3>🎨 Configuration</h3><div class="form-group"><label>Titre</label><input class="form-control" id="it" value="PUBLIC IP vs PRIVATE IP"></div>
+        <button class="btn btn-primary btn-block" onclick="genInfo()">🎨 Générer 3 variantes</button></div>
+        <div class="card"><h3>📋 Contenu</h3><textarea class="form-control" id="ic" rows="8">SECTION 1 - PUBLIC IP\n• Unique, assigned by ISP\n• Example: 8.8.8.8\n\nSECTION 2 - PRIVATE IP\n• Local network only\n• RFC 1918: 192.168.x.x\n\nSECTION 3 - NAT\nPrivate → NAT → Public → Internet</textarea></div></div>
+        <div class="image-grid" id="infoRes"></div>`;
+}
+function genInfo() {
+    const t = document.getElementById('it').value, c = document.getElementById('ic').value;
+    const res = document.getElementById('infoRes');
+    res.innerHTML = '<p>⏳ Génération...</p>';
+    const prompts = [`white background, blue orange infographic, title "${t}", professional, 4K. ${c.substring(0,200)}`,`white background, blue headers, comparison table, clean. ${c.substring(0,200)}`,`white background, orange blue, diagram, structured. ${c.substring(0,200)}`];
+    res.innerHTML = prompts.map((p,i) => { const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(p)}?width=1080&height=1080&nologo=true&seed=${i*300}`; DB.mediatheque.push({url,theme:t,date:new Date().toISOString()}); return `<div class="image-card"><img src="${url}" onerror="this.src='https://via.placeholder.com/300x300/F3F4F6/6B7280?text=Image'"><div class="footer"><button class="btn btn-primary btn-sm" onclick="window.open('${url}')">Voir</button><button class="btn btn-orange btn-sm" onclick="downloadImg('${url}')">📥</button></div></div>`; }).join('');
+}
+
+// ============ CAROUSEL ============
+function renderCarousel(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>🖼️ Carrousel WhatsApp</h1><p>Créez une série de 3-5 images</p></div></div>
+        <div class="card"><h3>🎨 Carrousel automatique</h3><div class="form-group"><label>Thème</label><input class="form-control" id="carT" value="Avantages Odoo ERP"></div><div class="form-group"><label>Nombre d'images</label><select class="form-select" id="carN"><option>3</option><option>4</option><option>5</option></select></div>
+        <button class="btn btn-primary btn-block" onclick="genCarousel()">🎨 Générer le carrousel</button></div>
+        <div class="image-grid" id="carRes"></div>`;
+}
+function genCarousel() {
+    const t = document.getElementById('carT').value, n = parseInt(document.getElementById('carN').value);
+    const res = document.getElementById('carRes');
+    let html = '';
+    for(let i=1;i<=n;i++) { const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(`carousel slide ${i}, ${t}, MANAWA TECHS, blue orange, professional`)}?width=1080&height=1080&nologo=true&seed=${i*100}`; html += `<div class="image-card"><div style="padding:6px 10px;font-weight:600;font-size:11px;">Slide ${i}/${n}</div><img src="${url}"><div class="footer"><button class="btn btn-primary btn-sm" onclick="window.open('${url}')">Voir</button></div></div>`; DB.mediatheque.push({url,theme:t,date:new Date().toISOString()}); }
+    res.innerHTML = html; toast(`✅ Carrousel de ${n} images généré !`);
+}
+
+// ============ VIDÉO ============
+function renderVideo(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>🎬 Script Vidéo</h1><p>Générez des scripts pour TikTok/Reels</p></div></div>
+        <div class="card"><h3>📝 Script court (30-60 secondes)</h3><div class="form-group"><label>Sujet</label><input class="form-control" id="vidS" value="Pourquoi utiliser Odoo ERP"></div>
+        <button class="btn btn-primary btn-block" onclick="genScript()">🎬 Générer le script</button></div>
+        <div id="vidRes"></div>`;
+}
+function genScript() {
+    const s = document.getElementById('vidS').value;
+    document.getElementById('vidRes').innerHTML = `<div class="card" style="border-left:4px solid var(--orange);"><h3>🎬 Script vidéo</h3><div class="post-box">🎥 SCRIPT 30s - ${s}\n\n[0-5s] 🎵 Musique dynamique + Texte: "${s}"\n[5-15s] Présentation du problème\n[15-25s] Solution MANAWA TECHS\n[25-30s] Call to action + Logo\n\n#MANAWA_TECHS #FormationIT</div><button class="btn btn-primary btn-sm mt-2" onclick="copy(this.parentElement.querySelector('.post-box').textContent)">📋 Copier</button></div>`;
+}
+
+// ============ MÉDIATHÈQUE ============
+function renderMediatheque(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>🖼️ Médiathèque</h1><p>${DB.mediatheque.length} images stockées</p></div><button class="btn btn-orange btn-sm" onclick="DB.mediatheque=[];renderMediatheque(document.getElementById('mainContent'))">🗑️ Vider</button></div>
+        <div class="image-grid">${DB.mediatheque.length===0?'<p style="color:var(--gray-500);grid-column:1/-1;text-align:center;padding:40px;">Aucune image. Générez des posts ou infographies !</p>':DB.mediatheque.map(m=>`<div class="image-card"><img src="${m.url}" onerror="this.style.display='none'"><div class="footer"><span style="font-size:10px;">${m.theme||''}</span><button class="btn btn-primary btn-sm" onclick="window.open('${m.url}')">Voir</button></div></div>`).join('')}</div>`;
+}
+
+// ============ PLANNING ============
+function renderPlanning(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>📅 Planification</h1><p>Programmez vos publications</p></div><button class="btn btn-primary btn-sm" onclick="notifTest()">🔔 Tester notification</button></div>
+        <div class="card"><h3>📋 Posts programmés (${DB.scheduledPosts.length})</h3>${DB.scheduledPosts.length===0?'<p style="color:var(--gray-500);">Aucun post planifié. Générez un post et cliquez sur "📅 Planifier"</p>':DB.scheduledPosts.map((p,i)=>`<div class="highlight blue" style="display:flex;justify-content:space-between;align-items:center;"><span>📅 ${p.date} - ${p.contenu.substring(0,60)}...</span><button class="btn btn-red btn-sm" onclick="DB.scheduledPosts.splice(${i},1);renderPlanning(document.getElementById('mainContent'))">🗑️</button></div>`).join('')}</div>
+        <div class="grid-3"><div class="card" style="text-align:center;"><h3>🌅 7h-9h</h3><p style="color:var(--green);">+25% engagement</p></div><div class="card" style="text-align:center;"><h3>☀️ 12h-14h</h3><p>Pause déjeuner</p></div><div class="card" style="text-align:center;"><h3>🌙 19h-21h</h3><p style="color:var(--green);">⭐ Pic d'audience</p></div></div>`;
+}
+
+// ============ AUTO-RÉPONSES ============
+function renderAutoReply(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>💬 Auto-réponses</h1><p>Réponses automatiques aux messages</p></div><button class="btn btn-primary btn-sm" onclick="addAutoReply()">+ Ajouter</button></div>
+        ${DB.autoReplies.map((a,i)=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div><strong>Mot-clé :</strong> "${a.mot}"<br><strong>Réponse :</strong> ${a.reponse}</div><button class="btn btn-red btn-sm" onclick="DB.autoReplies.splice(${i},1);renderAutoReply(document.getElementById('mainContent'))">🗑️</button></div></div>`).join('')}`;
+}
+function addAutoReply() {
+    const mot = prompt('Mot-clé détecté :'); if(!mot) return;
+    const reponse = prompt('Réponse automatique :'); if(!reponse) return;
+    DB.autoReplies.push({mot,reponse}); renderAutoReply(document.getElementById('mainContent')); toast('✅ Auto-réponse ajoutée !');
+}
+
+// ============ RELANCES ============
+function renderRelances(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>🔄 Relances automatiques</h1><p>Suivi des prospects</p></div></div>
+        <div class="card"><h3>📋 Campagnes de relance</h3>
+        <div class="highlight blue">⏰ Relance J+2 : "Bonjour, avez-vous eu le temps de regarder notre offre ?"</div>
+        <div class="highlight orange">⏰ Relance J+7 : "Dernier message pour vous proposer un devis gratuit 📞 +225 0797969475"</div>
+        <button class="btn btn-primary btn-sm mt-2" onclick="lancerRelance()">▶️ Lancer une relance test</button></div>`;
+}
+function lancerRelance() { const c = DB.clients.find(c=>c.statut==='contacté'); if(c) { c.historique.push({action:'Relance',date:new Date().toISOString()}); toast('✅ Relance envoyée à '+c.prenom+' '+c.nom); } else toast('Aucun prospect à relancer','error'); }
+
+// ============ PIPELINE CRM ============
+function renderPipeline(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>📊 Pipeline CRM</h1><p>Glissez-déposez vos prospects</p></div></div>
+        <div class="grid-5" style="grid-template-columns:repeat(5,1fr);gap:12px;">${DB.pipeline.map(s=>`<div class="pipeline-col"><h4>${s.nom} <span class="badge badge-blue">${s.clients.length}</span></h4>${s.clients.map(cid=>{const c=DB.clients.find(cl=>cl.id===cid);return c?`<div class="pipeline-card" draggable="true">👤 ${c.prenom} ${c.nom}<br><span class="badge badge-orange">Score:${c.score}</span></div>`:'';}).join('')}</div>`).join('')}</div>
+        <button class="btn btn-outline btn-sm mt-3" onclick="addProspect()">+ Ajouter prospect</button>`;
+}
+function addProspect() { const n = prompt('Nom :'), p = prompt('Prénom :'), t = prompt('Téléphone :'); if(n&&t){ const c = {id:DB.clients.length+1,nom:n,prenom:p||'',tel:t,type:'PME',statut:'prospect',score:50,historique:[]}; DB.clients.push(c); DB.pipeline[0].clients.push(c.id); renderPipeline(document.getElementById('mainContent')); toast('✅ Prospect ajouté !'); } }
+
+// ============ DEVIS & FACTURES ============
+function renderDevis(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>💰 Devis & Factures</h1></div><button class="btn btn-primary btn-sm" onclick="genDevis()">📄 Nouveau devis</button></div>
+        <div class="card"><h3>📋 Documents</h3><div class="highlight blue">📄 Devis #001 - Site Web - 500 000 FCFA - <span class="badge badge-orange">En attente</span></div><div class="highlight orange">📄 Facture #001 - Formation - 150 000 FCFA - <span class="badge badge-green">Payée</span></div></div>
+        <div id="devisRes"></div>`;
+}
+function genDevis() {
+    const c = prompt('Client :'), m = prompt('Montant (FCFA) :');
+    if(c&&m) { document.getElementById('devisRes').innerHTML = `<div class="card" style="border-left:4px solid var(--green);"><h3>✅ Devis généré</h3><p><strong>Client :</strong> ${c}<br><strong>Montant :</strong> ${parseInt(m).toLocaleString()} FCFA<br><strong>Réf :</strong> DEV-${Date.now().toString(36).toUpperCase()}</p><button class="btn btn-primary btn-sm mt-2" onclick="alert('📄 Devis téléchargé (simulation)')">📥 Télécharger PDF</button></div>`; }
+}
+
+// ============ CLIENTS ============
+function renderClients(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>👥 Prospects (${DB.clients.length})</h1></div></div>
+        ${DB.clients.map(c=>`<div class="card" style="display:flex;justify-content:space-between;align-items:center;"><div><strong>${c.prenom} ${c.nom}</strong> - ${c.tel} <span class="badge badge-blue">${c.type}</span></div><div><span class="badge ${c.statut==='client'?'badge-green':'badge-orange'}">${c.statut}</span> Score: ${c.score}/100</div></div>`).join('')}`;
+}
+
+// ============ ANALYTICS ============
+function renderAnalytics(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>📈 Analytics</h1></div><button class="btn btn-orange btn-sm" onclick="exportPDF()">📄 Export PDF</button></div>
+        <div class="stats-row"><div class="stat-card blue"><div class="icon">👥</div><div class="value">1,250</div><div class="label">Abonnés</div><div class="trend trend-up">↑ +12%</div></div>
+        <div class="stat-card orange"><div class="icon">👁️</div><div class="value">3,800</div><div class="label">Vues/semaine</div><div class="trend trend-up">↑ +18%</div></div>
+        <div class="stat-card green"><div class="icon">💬</div><div class="value">8.5%</div><div class="label">Engagement</div><div class="trend trend-up">↑ +2.1%</div></div>
+        <div class="stat-card purple"><div class="icon">📤</div><div class="value">340</div><div class="label">Partages</div><div class="trend trend-up">↑ +25%</div></div></div>
+        <div class="card"><h3>📊 Évolution des abonnés</h3><div class="chart-container"><canvas id="chartAbonnes"></canvas></div></div>
+        <div class="card"><h3>📋 Comparaison : Ce mois vs Mois dernier</h3><div class="grid-2"><div class="highlight blue">📈 +12% abonnés</div><div class="highlight orange">📈 +18% vues</div></div></div>`;
+    setTimeout(()=>{ const ctx=document.getElementById('chartAbonnes'); if(ctx) new Chart(ctx,{type:'line',data:{labels:['Sem1','Sem2','Sem3','Sem4'],datasets:[{label:'Abonnés',data:[800,950,1100,1250],borderColor:'#2563EB',backgroundColor:'rgba(37,99,235,0.1)',fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false}}); },200);
+}
+
+// ============ HEATMAP ============
+function renderHeatmap(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>🗺️ Heatmap d'engagement</h1><p>Jours et heures les plus actifs</p></div></div>
+        <div class="card"><h3>📊 Activité par jour/heure</h3><div class="chart-container"><canvas id="heatmapChart"></canvas></div></div>
+        <div class="highlight blue">🔥 <strong>Pic :</strong> Mercredi 19h-21h (890 interactions)</div>
+        <div class="highlight orange">📅 <strong>Meilleur jour :</strong> Mercredi | <strong>Pire jour :</strong> Dimanche</div>`;
+    setTimeout(()=>{ const ctx=document.getElementById('heatmapChart'); if(ctx) new Chart(ctx,{type:'bar',data:{labels:['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'],datasets:[{label:'Matin',data:[45,50,60,40,55,20,10],backgroundColor:'#2563EB'},{label:'Soir',data:[70,80,95,65,75,30,15],backgroundColor:'#F97316'}]},options:{responsive:true,maintainAspectRatio:false}}); },200);
+}
+
+// ============ QUIZ ============
+function renderQuiz(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>❓ Quiz interactif</h1><p>Engagez votre audience avec des quiz</p></div></div>
+        <div class="card"><h3>📝 Créer un quiz</h3><div class="form-group"><label>Question</label><input class="form-control" id="quizQ" value="Quelle est la différence entre HTTP et HTTPS ?"></div>
+        <div class="grid-2"><input class="form-control" id="qA" value="La sécurité (SSL/TLS)"><input class="form-control" id="qB" value="La vitesse"><input class="form-control" id="qC" value="Le prix"><input class="form-control" id="qD" value="La couleur"></div>
+        <button class="btn btn-primary btn-block" onclick="genererQuiz()">📱 Générer pour WhatsApp</button></div><div id="quizRes"></div>`;
+}
+function genererQuiz() {
+    const q=document.getElementById('quizQ').value, a=document.getElementById('qA').value;
+    document.getElementById('quizRes').innerHTML = `<div class="card" style="border-left:4px solid var(--purple);"><h3>❓ Quiz WhatsApp</h3><div class="post-box">❓ QUIZ DU JOUR ❓\n\n${q}\n\nA) ${a}\nB) ${document.getElementById('qB').value}\nC) ${document.getElementById('qC').value}\nD) ${document.getElementById('qD').value}\n\n💬 Répondez en commentaire !\nBonne réponse demain 👇</div><button class="btn btn-primary btn-sm mt-2" onclick="whatsapp(this.parentElement.querySelector('.post-box').textContent)">📱 Envoyer</button></div>`;
+}
+
+// ============ FORMATIONS ============
+function renderFormations(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>🎓 Catalogue Formations</h1></div><button class="btn btn-primary btn-sm" onclick="addFormation()">+ Ajouter</button></div>
+        ${DB.formations.map((f,i)=>`<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;"><div><h3>${f.nom}</h3><p>⏱️ ${f.duree} | 💰 ${f.prix.toLocaleString()} FCFA | 👥 ${f.inscrits} inscrits</p></div><div><button class="btn btn-green btn-sm" onclick="DB.formations[${i}].inscrits++;renderFormations(document.getElementById('mainContent'));toast('✅ +1 inscrit')">+1 Inscrit</button><button class="btn btn-outline btn-sm" onclick="genCertif('${f.nom}')">📜 Certificat</button></div></div></div>`).join('')}
+        <div class="highlight orange mt-3">💰 Paiement Mobile Money accepté : Orange Money, MTN, Wave</div>`;
+}
+function addFormation() { const n=prompt('Nom formation:'),d=prompt('Durée:'),p=parseInt(prompt('Prix FCFA:')); if(n&&p){ DB.formations.push({nom:n,duree:d||'4 semaines',prix:p,inscrits:0}); renderFormations(document.getElementById('mainContent')); } }
+function genCertif(nom) { alert(`📜 Certificat "${nom}" généré (simulation PDF)\n\nMANAWA TECHS certifie que l'apprenant a suivi avec succès la formation ${nom}.`); toast('📜 Certificat généré !'); }
+
+// ============ MARKETING ============
+function renderMarketing(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>📈 Marketing</h1></div></div>
+        <div class="grid-2"><div class="card"><h3>📧 Campagne Email</h3><textarea class="form-control" rows="3" placeholder="Contenu de l'email..."></textarea><button class="btn btn-primary btn-sm mt-2">Envoyer aux prospects</button></div>
+        <div class="card"><h3>📱 Landing Page</h3><p style="color:var(--gray-500);">URL de votre page : <strong>manawatechs.web.app</strong></p><button class="btn btn-orange btn-sm mt-2" onclick="window.open('https://manawatechs.web.app')">🌐 Visiter</button></div></div>
+        <div class="card"><h3>⭐ Témoignages clients</h3><div class="highlight blue">"MANAWA TECHS a transformé notre gestion avec Odoo !" - Jean K.</div><div class="highlight orange">"Excellente formation, je recommande !" - Marie K.</div></div>
+        <div class="card"><h3>📊 Calculateur de ROI</h3><div class="grid-2"><div class="form-group"><label>Investissement (FCFA)</label><input class="form-control" id="roiInv" value="500000"></div><div class="form-group"><label>Gain estimé (FCFA)</label><input class="form-control" id="roiGain" value="2000000"></div></div><button class="btn btn-primary btn-sm" onclick="calcROI()">📊 Calculer</button><div id="roiRes" class="mt-2"></div></div>`;
+}
+function calcROI() { const i=parseInt(document.getElementById('roiInv').value),g=parseInt(document.getElementById('roiGain').value); if(i&&g){ const roi=((g-i)/i*100).toFixed(0); document.getElementById('roiRes').innerHTML=`<div class="highlight green">💰 ROI : <strong>${roi}%</strong> - Gain net : <strong>${(g-i).toLocaleString()} FCFA</strong></div>`; } }
+
+// ============ SETTINGS ============
+function renderSettings(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>⚙️ Paramètres</h1></div></div>
+        <div class="card"><h3>🔗 Chaîne WhatsApp</h3><input class="form-control" value="https://whatsapp.com/channel/0029Vb7LcepA2pLCLxhjCd0b" readonly><button class="btn btn-outline btn-sm mt-2" onclick="copy('https://whatsapp.com/channel/0029Vb7LcepA2pLCLxhjCd0b')">📋 Copier</button></div>
+        <div class="card"><h3>📱 Contact</h3><input class="form-control" value="+225 0797969475" readonly></div>
+        <div class="card"><h3>🌐 Site web</h3><input class="form-control" value="https://manawatechs.web.app" readonly><button class="btn btn-outline btn-sm mt-2" onclick="window.open('https://manawatechs.web.app')">🌐 Visiter</button></div>
+        <div class="card"><h3>💾 Sauvegarde</h3><p style="color:var(--gray-500);">Dernière sauvegarde : Aujourd'hui</p><button class="btn btn-primary btn-sm" onclick="sauvegarder()">💾 Sauvegarder maintenant</button></div>`;
+}
+
+// ============ USERS ============
+function renderUsers(main) {
+    main.innerHTML = `<div class="topbar"><div><h1>🔐 Sécurité & Utilisateurs</h1></div><button class="btn btn-primary btn-sm" onclick="addUser()">+ Ajouter utilisateur</button></div>
+        <div class="card"><h3>👥 Utilisateurs</h3><div class="highlight blue">👑 <strong>Admin</strong> - Tous les droits - <span class="badge badge-green">Actif</span></div><div class="highlight orange">✍️ <strong>Éditeur</strong> - Posts & Images - <span class="badge badge-green">Actif</span></div><div class="highlight">💼 <strong>Commercial</strong> - CRM & Clients - <span class="badge badge-green">Actif</span></div></div>
+        <div class="card"><h3>📋 Journal d'activité</h3><div style="font-size:12px;color:var(--gray-500);">🕐 ${new Date().toLocaleString()} - Connexion Admin<br>🕐 ${new Date(Date.now()-3600000).toLocaleString()} - Post généré<br>🕐 ${new Date(Date.now()-7200000).toLocaleString()} - Client ajouté</div></div>`;
+}
+function addUser() { const n=prompt('Nom utilisateur:'),r=prompt('Rôle (admin/editeur/commercial):'); if(n&&r){ toast('✅ Utilisateur '+n+' ajouté ('+r+')'); } }
+
+// ============ UTILS ============
+function toast(m,t='success'){ const d=document.createElement('div'); d.className='toast '+t; d.textContent=m; document.getElementById('toasts').appendChild(d); setTimeout(()=>d.remove(),3000); }
+function copy(t){ navigator.clipboard.writeText(t).then(()=>toast('✅ Copié !')); }
+function whatsapp(m){ window.open('https://web.whatsapp.com/send?text='+encodeURIComponent(m),'_blank'); toast('📱 WhatsApp ouvert'); }
+function downloadImg(url){ window.open(url,'_blank'); }
+function esc(s){ return (s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/`/g,'\\`'); }
+function genererIdee(){ const idees=['💻 Les 5 commandes Linux essentielles','📊 Excel : Tableau croisé dynamique','🔒 Top 5 erreurs mot de passe','🌐 HTTP vs HTTPS expliqué']; const idee=idees[Math.floor(Math.random()*idees.length)]; document.getElementById('postRes')?document.getElementById('postRes').innerHTML=`<div class="card" style="border-left:4px solid var(--orange);"><h3>💡 Idée</h3><div class="post-box">${idee}</div></div>`:toast('💡 '+idee); }
+function notifTest(){ if('Notification' in window){ Notification.requestPermission().then(p=>{ if(p==='granted'){ new Notification('MANAWA TECHS',{body:'🔔 Rappel : Publication prévue aujourd\'hui à 19h !',icon:'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect fill="%232563EB" width="100" height="100" rx="20"/><text fill="white" x="50" y="65" text-anchor="middle" font-size="50">⚡</text></svg>'}); } }); } else toast('🔔 Rappel : Publication à 19h !'); }
+function sauvegarder(){ toast('💾 Sauvegarde effectuée !'); }
+function exportPDF(){ toast('📄 Rapport PDF exporté (simulation)'); }
+
+// ============ PWA ============
+if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>{ navigator.serviceWorker.register('data:application/javascript,'+encodeURIComponent('self.addEventListener("fetch",e=>{})')); });
+}
+
+// ============ INIT ============
+renderCreate(document.getElementById('mainContent'));
+</script>
+</body>
+</html>

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>MANAWA TECHS - Générateur d'illustrations</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0f0f1a;
+            color: white;
+            padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; }
+        h1 { text-align: center; color: #6C5CE7; margin-bottom: 30px; font-size: 28px; }
+        
+        .styles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .style-card {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 20px;
+            border: 2px solid #2a2a4e;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .style-card:hover {
+            border-color: #6C5CE7;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 30px rgba(108,92,231,0.3);
+        }
+        
+        .style-card.selected {
+            border-color: #00CEC9;
+            background: #1a1a3e;
+        }
+        
+        .style-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 12px;
+        }
+        
+        .style-card h3 { font-size: 16px; margin-bottom: 8px; color: #00CEC9; }
+        .style-card p { font-size: 12px; color: #888; line-height: 1.4; }
+        
+        .controls {
+            background: #1a1a2e;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+        }
+        
+        .controls label {
+            display: block;
+            margin-bottom: 6px;
+            color: #888;
+            font-size: 13px;
+            font-weight: 600;
+        }
+        
+        .controls select, .controls input {
+            width: 100%;
+            padding: 12px;
+            background: #0f0f1a;
+            border: 1px solid #2a2a4e;
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            transition: 0.3s;
+            width: 100%;
+        }
+        
+        .btn-generate {
+            background: linear-gradient(135deg, #6C5CE7, #5A4BD1);
+            color: white;
+            font-size: 16px;
+        }
+        
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(108,92,231,0.5);
+        }
+        
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .result-card {
+            background: #1a1a2e;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #2a2a4e;
+        }
+        
+        .result-card img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+        }
+        
+        .result-card .actions {
+            padding: 12px;
+            display: flex;
+            gap: 8px;
+        }
+        
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 8px;
+            border: 1px solid #2a2a4e;
+            background: transparent;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .btn-sm:hover { background: #6C5CE7; }
+        
+        .whatsapp-preview {
+            background: #075e54;
+            border-radius: 16px;
+            padding: 16px;
+            margin-top: 16px;
+            max-width: 400px;
+        }
+        
+        .whatsapp-preview .msg {
+            background: white;
+            color: #333;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .whatsapp-preview .msg::after {
+            content: '';
+            position: absolute;
+            right: -8px;
+            top: 0;
+            border: 8px solid transparent;
+            border-left-color: white;
+        }
+        
+        .whatsapp-preview .time {
+            text-align: right;
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 Générateur d'Illustrations MANAWA TECHS</h1>
+        
+        <div class="controls">
+            <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px;">
+                <div>
+                    <label>📂 Domaine</label>
+                    <select id="domaine">
+                        <option value="odoo">Odoo ERP - Gestion entreprise</option>
+                        <option value="web">Développement Web</option>
+                        <option value="ia">Intelligence Artificielle</option>
+                        <option value="formation">Formation IT</option>
+                        <option value="securite">Cybersécurité</option>
+                        <option value="imprimerie">Imprimerie Numérique</option>
+                        <option value="linux">Administration Systèmes</option>
+                    </select>
+                </div>
+                <div>
+                    <label>🎨 Style visuel</label>
+                    <select id="style">
+                        <option value="modern corporate">Corporate Moderne</option>
+                        <option value="flat illustration">Illustration Flat Design</option>
+                        <option value="3d render">3D Rendu Réaliste</option>
+                        <option value="photorealistic">Photo Réaliste</option>
+                        <option value="minimalist">Minimaliste Épuré</option>
+                        <option value="african vibrant">Africain Vibrant</option>
+                    </select>
+                </div>
+                <div>
+                    <label>📱 Format</label>
+                    <select id="format">
+                        <option value="square">Carré (1:1) - Post WhatsApp</option>
+                        <option value="portrait">Portrait (9:16) - Story</option>
+                        <option value="landscape">Paysage (16:9) - Bannière</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-generate" onclick="genererImages()">
+                🚀 Générer 4 illustrations
+            </button>
+        </div>
+        
+        <div class="result-grid" id="results"></div>
+    </div>
+
+    <script>
+        const themes = {
+            odoo: [
+                "Modern ERP dashboard on computer screen, African business professional, clean office, blue and purple tones, corporate",
+                "African entrepreneur using tablet with business graphs, modern office Abidjan, professional, success, motivation",
+                "Integrated business management software interface, inventory, sales, accounting in one screen, sleek design",
+                "Happy African business owner looking at laptop with growth charts, modern workplace, achievement"
+            ],
+            web: [
+                "African web developer coding on laptop, modern workspace, multiple screens with code, creative atmosphere",
+                "Responsive website design on multiple devices, modern UI, African business theme, professional",
+                "Digital agency team collaborating, modern office Côte d'Ivoire, creative energy, web development project",
+                "E-commerce website mockup on laptop, African products online store, modern design, professional"
+            ],
+            ia: [
+                "Artificial intelligence concept, futuristic brain with African patterns, neon purple and blue, technology innovation",
+                "Robot assistant helping African business, modern office, AI automation, friendly technology",
+                "Neural network visualization with African colors, data flowing, abstract, futuristic, purple and gold",
+                "African professional using AI tools on holographic screen, modern, innovative, technology leader"
+            ],
+            formation: [
+                "Modern IT classroom with African students, computers, learning programming, bright and inspiring",
+                "Professional trainer teaching digital skills, engaged students, modern training center, Côte d'Ivoire",
+                "Online learning platform on laptop, African student, education technology, certificates, success",
+                "Group of young Africans learning to code, collaborative, modern workspace, tech education"
+            ],
+            securite: [
+                "Cybersecurity shield protecting digital network, African business protected, dark theme, green matrix",
+                "IT security professional monitoring screens, modern security operations center, vigilant",
+                "Digital lock with African continent map, data protection concept, professional, serious",
+                "Firewall visualization protecting business data, abstract, network security, modern"
+            ],
+            imprimerie: [
+                "Modern printing workshop, large format printer, colorful banners and flyers, professional equipment",
+                "Graphic designer creating print materials, vibrant colors, creative studio, African designs",
+                "Stack of professionally printed materials, business cards, flyers, banners, high quality",
+                "Printing press in action, vivid colors, professional print shop, industrial, clean"
+            ],
+            linux: [
+                "Linux server room with blinking lights, professional data center, modern infrastructure, green accents",
+                "System administrator working on Linux terminal, multiple monitors with code, professional setup",
+                "Open source technology concept, penguin mascot with African tech elements, modern, professional",
+                "Cloud infrastructure visualization, Linux servers, scalable, modern technology, blue tones"
+            ]
+        };
+
+        async function genererImages() {
+            const domaine = document.getElementById('domaine').value;
+            const style = document.getElementById('style').value;
+            const format = document.getElementById('format').value;
+            const results = document.getElementById('results');
+            
+            const dimensions = {
+                square: '1024x1024',
+                portrait: '576x1024',
+                landscape: '1024x576'
+            };
+            
+            const size = dimensions[format];
+            const [width, height] = size.split('x');
+            
+            results.innerHTML = '<p style="text-align:center;padding:40px;">⏳ Génération des 4 illustrations en cours...</p>';
+            
+            const prompts = themes[domaine] || themes['odoo'];
+            
+            const images = [];
+            for (const prompt of prompts) {
+                const fullPrompt = `${prompt}, ${style}, high quality, professional, 4k, no text, no watermark`;
+                const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}?width=${width}&height=${height}&nologo=true&seed=${Math.floor(Math.random() * 10000)}`;
+                images.push({ url, prompt: fullPrompt });
+            }
+            
+            // Afficher les images au fur et à mesure qu'elles chargent
+            results.innerHTML = images.map((img, i) => `
+                <div class="result-card">
+                    <img src="${img.url}" alt="Illustration ${i+1}" 
+                         onload="this.style.opacity='1'" 
+                         onerror="this.src='https://via.placeholder.com/${width}x${height}/6C5CE7/white?text=MANAWA+TECHS+${domaine}'"
+                         style="opacity:0;transition:opacity 0.5s;">
+                    <div class="actions">
+                        <button class="btn-sm" onclick="window.open('${img.url}')">🔗 Ouvrir</button>
+                        <button class="btn-sm" onclick="telecharger('${img.url}', 'manawa-${domaine}-${i+1}.png')">📥 Télécharger</button>
+                        <button class="btn-sm" onclick="copierLien('${img.url}')">📋 Copier lien</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function telecharger(url, nom) {
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = nom;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+
+        function copierLien(url) {
+            navigator.clipboard.writeText(url).then(() => alert('✅ Lien copié !'));
+        }
+
+        // Générer automatiquement au chargement
+        genererImages();
+    </script>
+</body>
+</html>

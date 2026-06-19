@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MANAWA TECHS - Générateur d'illustrations</title>
+    <style>
+        :root {
+            --bg: #0a0a1a;
+            --card: #12122a;
+            --border: #1e1e3e;
+            --primary: #2563eb;
+            --blue-light: #3b82f6;
+            --white: #ffffff;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+            --radius: 16px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e3a5f, #2563eb);
+            padding: 30px;
+            text-align: center;
+            border-bottom: 3px solid #3b82f6;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        /* FORMULAIRE */
+        .form-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group select, .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: #0a0a1a;
+            border: 1px solid var(--border);
+            color: white;
+            border-radius: 10px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-group select:focus, .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.2);
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            font-size: 16px;
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(37,99,235,0.4);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 12px;
+            border-radius: 8px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-sm:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+            border: none;
+        }
+
+        .btn-whatsapp:hover { background: #1ea855; }
+
+        /* RÉSULTATS */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 24px;
+        }
+
+        @media (max-width: 500px) {
+            .results-grid { grid-template-columns: 1fr; }
+        }
+
+        .result-card {
+            background: white;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+
+        .result-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 40px rgba(37,99,235,0.3);
+        }
+
+        .result-card img {
+            width: 100%;
+            display: block;
+        }
+
+        .result-actions {
+            padding: 12px;
+            display: flex;
+            gap: 8px;
+            background: #f8fafc;
+            flex-wrap: wrap;
+        }
+
+        .result-actions .btn-sm {
+            color: #333;
+            border-color: #ddd;
+        }
+
+        .result-actions .btn-sm:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* LOADING */
+        .loading {
+            text-align: center;
+            padding: 60px;
+            color: var(--text-muted);
+            font-size: 16px;
+        }
+
+        .loading .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* PREVIEW */
+        .preview-note {
+            background: #1e3a5f;
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .preview-note .icon {
+            font-size: 30px;
+        }
+
+        .preview-note p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.9);
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>🎨 MANAWA TECHS - Illustrations</h1>
+        <p>Générez des images style dessin/diagramme avec texte intégré pour votre chaîne WhatsApp</p>
+    </div>
+
+    <div class="container">
+
+        <div class="preview-note">
+            <span class="icon">💡</span>
+            <p>
+                <strong>Style MANAWA :</strong> Fond bleu et blanc, style dessin/diagramme éducatif, texte intégré dans l'image.<br>
+                Idéal pour vos posts "Programme vs Logiciel vs Application" et autres comparatifs.
+            </p>
+        </div>
+
+        <!-- FORMULAIRE -->
+        <div class="form-card">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>📂 Thème</label>
+                    <select id="theme">
+                        <option value="comparatif">Comparatif (Programme vs Logiciel)</option>
+                        <option value="definition">Définition simple</option>
+                        <option value="astuce">Astuce informatique</option>
+                        <option value="etapes">Étapes / Tutoriel</option>
+                        <option value="odoo">Odoo ERP</option>
+                        <option value="web">Développement Web</option>
+                        <option value="ia">Intelligence Artificielle</option>
+                        <option value="formation">Formation IT</option>
+                        <option value="securite">Cybersécurité</option>
+                        <option value="linux">Linux / Systèmes</option>
+                        <option value="imprimerie">Imprimerie Numérique</option>
+                        <option value="custom">Personnalisé</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>📝 Titre du post</label>
+                    <input type="text" id="titre" placeholder="Ex: PROGRAMME vs LOGICIEL vs APPLICATION" value="PROGRAMME vs LOGICIEL vs APPLICATION">
+                </div>
+                <div class="form-group">
+                    <label>🎨 Style</label>
+                    <select id="style">
+                        <option value="educational diagram blue white">Diagramme éducatif bleu/blanc</option>
+                        <option value="clean infographic blue">Infographie propre bleue</option>
+                        <option value="flat design comparison">Design plat comparatif</option>
+                        <option value="minimalist tech illustration">Illustration tech minimaliste</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>📋 Contenu du post (les textes qui apparaîtront sur l'image)</label>
+                <textarea id="contenu" rows="5" placeholder="🔧 PROGRAMME&#10;→ Une seule instruction&#10;→ Exemple : un code qui additionne 2+3&#10;&#10;📦 LOGICIEL&#10;→ Plusieurs programmes ensemble&#10;→ Exemple : Microsoft Word, Photoshop&#10;&#10;📱 APPLICATION&#10;→ Un logiciel simple, souvent sur téléphone&#10;→ Exemple : WhatsApp, TikTok">🔧 PROGRAMME
+→ Une seule instruction
+→ Exemple : un code qui additionne 2+3
+
+📦 LOGICIEL
+→ Plusieurs programmes ensemble
+→ Exemple : Microsoft Word, Photoshop
+
+📱 APPLICATION
+→ Un logiciel simple, souvent sur téléphone
+→ Exemple : WhatsApp, TikTok
+
+🎯 LA RÈGLE D'OR :
+Toute application est un logiciel, mais tous les logiciels ne sont pas des applications.</textarea>
+            </div>
+
+            <button class="btn btn-primary" onclick="genererIllustrations()">
+                🚀 Générer les illustrations
+            </button>
+        </div>
+
+        <!-- RÉSULTATS -->
+        <div class="results-grid" id="results">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Cliquez sur "Générer" pour créer vos illustrations</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function genererIllustrations() {
+            const theme = document.getElementById('theme').value;
+            const titre = document.getElementById('titre').value;
+            const contenu = document.getElementById('contenu').value;
+            const style = document.getElementById('style').value;
+            const results = document.getElementById('results');
+
+            results.innerHTML = `
+                <div class="loading" style="grid-column:1/-1;">
+                    <div class="spinner"></div>
+                    <p>🎨 Création de vos illustrations style MANAWA TECHS...</p>
+                    <p style="font-size:12px;margin-top:8px;">Génération de 4 variantes en cours</p>
+                </div>
+            `;
+
+            // Créer le prompt optimisé pour le style MANAWA
+            const basePrompt = `${style}, educational illustration, blue and white color scheme, clean design, diagram style, tech infographic, title "${titre}", showing comparison or explanation, no realistic photos, flat vector style, professional, for WhatsApp channel, Côte d'Ivoire tech education`;
+
+            // 4 variantes avec des angles différents
+            const prompts = [
+                `${basePrompt}, horizontal layout with icons and arrows`,
+                `${basePrompt}, vertical layout with boxes and labels`,
+                `${basePrompt}, mindmap style with branches and categories`,
+                `${basePrompt}, table comparison style with columns and emojis`
+            ];
+
+            const images = prompts.map((prompt, i) => {
+                const fullPrompt = `${prompt}. Content to include: ${contenu.substring(0, 200)}`;
+                const url = `https://image.pollinations.ai/prompt/${encodeURIComponent(fullPrompt)}?width=1080&height=1080&nologo=true&seed=${Math.floor(Math.random() * 10000) + i}`;
+                return { url, index: i };
+            });
+
+            // Afficher les images
+            results.innerHTML = images.map((img, i) => `
+                <div class="result-card">
+                    <img src="${img.url}" 
+                         alt="Illustration MANAWA ${i+1}" 
+                         loading="lazy"
+                         onerror="this.src='https://via.placeholder.com/1080x1080/1e3a5f/white?text=MANAWA+TECHS+${encodeURIComponent(titre.substring(0,20))}'">
+                    <div class="result-actions">
+                        <button class="btn-sm" onclick="window.open('${img.url}')">🔗 Voir en grand</button>
+                        <button class="btn-sm" onclick="telecharger('${img.url}', 'manawa-${Date.now()}-${i+1}.png')">📥 Télécharger</button>
+                        <button class="btn-sm" onclick="copier('${img.url}')">📋 Copier lien</button>
+                        <button class="btn-sm btn-whatsapp" onclick="partagerWhatsApp('${img.url}', '${escapeJs(titre)}')">📱 WhatsApp</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function telecharger(url, nom) {
+            fetch(url)
+                .then(r => r.blob())
+                .then(blob => {
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = nom;
+                    a.click();
+                })
+                .catch(() => {
+                    window.open(url, '_blank');
+                });
+        }
+
+        function copier(texte) {
+            navigator.clipboard.writeText(texte).then(() => {
+                alert('✅ Lien copié dans le presse-papier !');
+            });
+        }
+
+        function partagerWhatsApp(imageUrl, titre) {
+            const message = encodeURIComponent(`${titre}\n\n📸 Illustration générée par MANAWA TECHS\n${imageUrl}`);
+            window.open(`https://web.whatsapp.com/send?text=${message}`, '_blank');
+        }
+
+        function escapeJs(str) {
+            return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+        }
+
+        // Générer automatiquement au chargement
+        setTimeout(genererIllustrations, 500);
+    </script>
+</body>
+</html>

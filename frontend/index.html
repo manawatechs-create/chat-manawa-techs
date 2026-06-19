@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MANAWA TECHS PRO</title>
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#2563EB">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root{--blue:#2563EB;--blue-dark:#1D4ED8;--blue-light:#DBEAFE;--blue-bg:#EFF6FF;--orange:#F97316;--orange-light:#FED7AA;--orange-bg:#FFF7ED;--green:#16A34A;--red:#DC2626;--purple:#8B5CF6;--white:#FFF;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;--gray-500:#6B7280;--gray-700:#374151;--gray-900:#111827;--radius:12px;--radius-lg:16px;--transition:all 0.2s}
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Inter',sans-serif;background:var(--gray-50);color:var(--gray-900);font-size:14px}
+        
+        .app{display:flex;min-height:100vh}
+        .sidebar{width:250px;background:var(--white);border-right:1px solid var(--gray-200);position:fixed;height:100vh;overflow-y:auto;z-index:50;padding:12px 8px;transition:left 0.3s;left:0}
+        .logo{display:flex;align-items:center;gap:8px;padding:6px 8px 12px;border-bottom:1px solid var(--gray-200);margin-bottom:8px}
+        .logo-icon{width:30px;height:30px;background:linear-gradient(135deg,var(--orange),var(--blue));border-radius:8px;display:flex;align-items:center;justify-content:center;color:white;font-size:14px;font-weight:700}
+        .nav-section{font-size:8px;text-transform:uppercase;letter-spacing:1.5px;color:var(--gray-500);padding:10px 8px 3px;font-weight:700}
+        .nav-item{display:flex;align-items:center;gap:6px;padding:8px 10px;border-radius:6px;cursor:pointer;font-size:11px;color:var(--gray-700);transition:var(--transition);margin-bottom:1px}
+        .nav-item:hover{background:var(--gray-100)}.nav-item.active{background:var(--blue-bg);color:var(--blue);font-weight:600}
+        .nav-item i{font-size:14px;width:16px;text-align:center}
+        
+        .main-content{margin-left:250px;flex:1;padding:16px 20px;max-width:1200px}
+        .page{display:none;animation:fadeIn 0.2s}.page.active{display:block}
+        @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+        
+        .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+        .topbar h1{font-size:20px;font-weight:800}.topbar p{color:var(--gray-500);font-size:11px}
+        .card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:16px;margin-bottom:12px}
+        
+        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.grid-4{display:grid;grid-template-columns:repeat(2,1fr);gap:6px}
+        @media(min-width:600px){.grid-4{grid-template-columns:repeat(4,1fr)}}
+        @media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr}.sidebar{left:-250px}.sidebar.open{left:0}.main-content{margin-left:0}}
+        
+        .btn{padding:9px 14px;border-radius:8px;font-weight:600;font-size:12px;cursor:pointer;transition:var(--transition);border:none;display:inline-flex;align-items:center;gap:5px;font-family:inherit;min-height:38px}
+        .btn-primary{background:var(--blue);color:white}.btn-orange{background:var(--orange);color:white}.btn-green{background:var(--green);color:white}.btn-red{background:var(--red);color:white}
+        .btn-outline{background:white;border:1px solid var(--gray-200)}.btn-sm{padding:5px 10px;font-size:10px;min-height:28px}.btn-lg{padding:14px 22px;font-size:14px}.btn-block{width:100%;justify-content:center}
+        
+        .form-group{margin-bottom:8px}.form-group label{display:block;font-weight:600;font-size:10px;color:var(--gray-500);text-transform:uppercase;margin-bottom:2px}
+        .form-control,.form-select{width:100%;padding:9px 12px;border:1px solid var(--gray-200);border-radius:7px;font-size:13px;font-family:inherit;background:var(--white)}
+        .form-control:focus,.form-select:focus{outline:none;border-color:var(--blue)}
+        .badge{display:inline-block;padding:2px 7px;border-radius:20px;font-size:8px;font-weight:600}.badge-blue{background:var(--blue-bg);color:var(--blue)}.badge-orange{background:var(--orange-bg);color:var(--orange-dark)}.badge-green{background:#DCFCE7;color:var(--green)}
+        
+        /* CHAT */
+        .chat-container{display:flex;flex-direction:column;height:70vh;max-height:600px}
+        .chat-messages{flex:1;overflow-y:auto;padding:12px;background:var(--white);border-radius:var(--radius-lg);border:1px solid var(--gray-200);margin-bottom:10px}
+        .chat-msg{max-width:90%;margin-bottom:10px;padding:12px 16px;border-radius:14px;font-size:13px;line-height:1.7;word-wrap:break-word}
+        .chat-msg.user{background:var(--blue);color:white;margin-left:auto;border-bottom-right-radius:4px}
+        .chat-msg.ia{background:var(--gray-100);color:var(--gray-900);margin-right:auto;border-bottom-left-radius:4px}
+        
+        /* MARKDOWN DANS LE CHAT */
+        .chat-msg.ia h1,.chat-msg.ia h2,.chat-msg.ia h3{font-size:15px;font-weight:700;margin:10px 0 6px;color:var(--blue)}
+        .chat-msg.ia h3{font-size:13px}
+        .chat-msg.ia p{margin:4px 0}
+        .chat-msg.ia ul,.chat-msg.ia ol{margin:6px 0;padding-left:20px}
+        .chat-msg.ia li{margin:2px 0}
+        .chat-msg.ia strong{color:var(--blue);font-weight:700}
+        .chat-msg.ia em{color:var(--orange)}
+        .chat-msg.ia code{background:#1e1e1e;color:#d4d4d4;padding:2px 6px;border-radius:4px;font-size:11px}
+        .chat-msg.ia pre{background:#1e1e1e;color:#d4d4d4;padding:12px;border-radius:8px;overflow-x:auto;margin:8px 0;font-size:12px}
+        .chat-msg.ia a{color:var(--blue);text-decoration:underline}
+        .chat-msg.ia hr{border:none;border-top:1px solid var(--gray-200);margin:8px 0}
+        
+        .chat-input-row{display:flex;gap:6px;margin-top:8px}
+        .chat-input-row input{flex:1;padding:9px 12px;border:1px solid var(--gray-200);border-radius:8px;font-size:13px}
+        .chat-input-row input:focus{outline:none;border-color:var(--blue)}
+        .chat-actions{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+        
+        .mic-btn{width:70px;height:70px;border-radius:50%;border:3px solid var(--gray-200);background:var(--white);cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:26px;color:var(--gray-500)}
+        .mic-btn.listening{border-color:var(--red);color:var(--red);animation:pulse 1.5s infinite}
+        @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,0.4)}50%{box-shadow:0 0 0 20px rgba(220,38,38,0)}}
+        
+        .toast-container{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:9999;width:90%;max-width:400px}
+        .toast{background:var(--gray-900);color:white;padding:10px 16px;border-radius:8px;font-weight:600;font-size:11px;text-align:center;animation:slideUp 0.3s;margin-top:4px}
+        @keyframes slideUp{from{transform:translateY(50px);opacity:0}to{transform:translateY(0);opacity:1}}
+        
+        .menu-btn{display:none;position:fixed;top:10px;left:10px;z-index:60;width:36px;height:36px;border-radius:50%;background:var(--blue);color:white;border:none;font-size:16px;cursor:pointer}
+        .bottom-nav{position:fixed;bottom:0;left:0;width:100%;background:var(--white);border-top:1px solid var(--gray-200);display:none;z-index:100;padding:5px 0;padding-bottom:env(safe-area-inset-bottom,5px)}
+        .bottom-nav-inner{display:flex;justify-content:space-around}.bottom-nav-item{display:flex;flex-direction:column;align-items:center;gap:1px;padding:5px 3px;cursor:pointer;font-size:8px;color:var(--gray-500);border:none;background:none;font-family:inherit}.bottom-nav-item.active{color:var(--blue)}.bottom-nav-item i{font-size:16px}
+        @media(max-width:768px){.menu-btn{display:flex;align-items:center;justify-content:center}.bottom-nav{display:block}.main-content{padding-bottom:65px}}
+        
+        .manawa-post{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius-lg);padding:16px;white-space:pre-wrap;line-height:1.7;font-size:13px;border-left:4px solid var(--blue);max-height:350px;overflow-y:auto}
+        .image-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+        .image-card{background:white;border:1px solid var(--gray-200);border-radius:var(--radius);overflow:hidden}
+        .image-card img{width:100%;display:block}
+        .pipeline-col{background:var(--gray-50);border-radius:var(--radius);padding:8px;min-height:80px;border:2px dashed var(--gray-200);margin-bottom:8px}
+        .chart-container{position:relative;height:250px;margin:8px 0}
+        .stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:14px}
+        .stat-card{background:var(--white);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px;text-align:center}.stat-card .value{font-size:22px;font-weight:800}.stat-card .label{font-size:10px;color:var(--gray-500)}
+        
+        .file-upload-area{border:2px dashed var(--gray-300);border-radius:var(--radius);padding:20px;text-align:center;cursor:pointer;margin-bottom:10px}
+        .file-upload-area:hover{border-color:var(--blue)}
+    </style>
+</head>
+<body>
+<button class="menu-btn" onclick="toggleSidebar()">☰</button>
+<div class="app">
+    <aside class="sidebar" id="sidebar">
+        <div class="logo"><div class="logo-icon">⚡</div><div><span style="font-weight:800;font-size:13px;">MANAWA TECHS</span><span style="font-size:7px;color:var(--gray-500);display:block;">PRO v12</span></div></div>
+        <div class="nav-section">Création</div>
+        <div class="nav-item" data-page="create" onclick="navigate('create',this)"><i class="bi bi-stars"></i> Créer un post</div>
+        <div class="nav-item" data-page="vocal" onclick="navigate('vocal',this)"><i class="bi bi-mic-fill"></i> Assistant Vocal</div>
+        <div class="nav-item" data-page="infographie" onclick="navigate('infographie',this)"><i class="bi bi-diagram-3"></i> Infographie</div>
+        <div class="nav-item" data-page="carousel" onclick="navigate('carousel',this)"><i class="bi bi-images"></i> Carrousel</div>
+        <div class="nav-item" data-page="video" onclick="navigate('video',this)"><i class="bi bi-camera-video"></i> Script Vidéo</div>
+        <div class="nav-section">Chat & Fichiers</div>
+        <div class="nav-item active" data-page="chat" onclick="navigate('chat',this)"><i class="bi bi-chat-dots-fill"></i> Chat IA</div>
+        <div class="nav-item" data-page="upload" onclick="navigate('upload',this)"><i class="bi bi-cloud-upload"></i> Analyse Fichier</div>
+        <div class="nav-section">Automatisation</div>
+        <div class="nav-item" data-page="planning" onclick="navigate('planning',this)"><i class="bi bi-calendar-check"></i> Planification</div>
+        <div class="nav-item" data-page="autoreply" onclick="navigate('autoreply',this)"><i class="bi bi-chat-dots"></i> Auto-réponses</div>
+        <div class="nav-item" data-page="relances" onclick="navigate('relances',this)"><i class="bi bi-arrow-repeat"></i> Relances</div>
+        <div class="nav-section">CRM & Ventes</div>
+        <div class="nav-item" data-page="pipeline" onclick="navigate('pipeline',this)"><i class="bi bi-diagram-3"></i> Pipeline CRM</div>
+        <div class="nav-item" data-page="devis" onclick="navigate('devis',this)"><i class="bi bi-file-text"></i> Devis & Factures</div>
+        <div class="nav-item" data-page="clients" onclick="navigate('clients',this)"><i class="bi bi-people"></i> Prospects</div>
+        <div class="nav-section">Analytics</div>
+        <div class="nav-item" data-page="analytics" onclick="navigate('analytics',this)"><i class="bi bi-graph-up-arrow"></i> Statistiques</div>
+        <div class="nav-item" data-page="heatmap" onclick="navigate('heatmap',this)"><i class="bi bi-grid-3x3"></i> Heatmap</div>
+        <div class="nav-section">Engagement</div>
+        <div class="nav-item" data-page="quiz" onclick="navigate('quiz',this)"><i class="bi bi-patch-question"></i> Quiz</div>
+        <div class="nav-item" data-page="formations" onclick="navigate('formations',this)"><i class="bi bi-mortarboard"></i> Formations</div>
+        <div class="nav-item" data-page="marketing" onclick="navigate('marketing',this)"><i class="bi bi-megaphone"></i> Marketing</div>
+        <div class="nav-section">Système</div>
+        <div class="nav-item" data-page="settings" onclick="navigate('settings',this)"><i class="bi bi-gear"></i> Paramètres</div>
+    </aside>
+    <main class="main-content" id="mainContent"></main>
+</div>
+<nav class="bottom-nav"><div class="bottom-nav-inner">
+    <button class="bottom-nav-item active" data-page="chat" onclick="navigate('chat',this)"><i class="bi bi-chat-dots-fill"></i>Chat</button>
+    <button class="bottom-nav-item" data-page="create" onclick="navigate('create',this)"><i class="bi bi-stars"></i>Créer</button>
+    <button class="bottom-nav-item" data-page="vocal" onclick="navigate('vocal',this)"><i class="bi bi-mic-fill"></i>Vocal</button>
+    <button class="bottom-nav-item" data-page="upload" onclick="navigate('upload',this)"><i class="bi bi-cloud-upload"></i>Fichier</button>
+    <button class="bottom-nav-item" onclick="toggleSidebar()"><i class="bi bi-list"></i>Menu</button>
+</div></nav>
+<div class="toast-container" id="toasts"></div>
+
+<script>
+const API = 'http://localhost:3000/api';
+let currentType = 'definition', currentSession = null, recognition = null, isListening = false;
+let medias = [], scheduledPosts = [];
+
+function navigate(page, element) {
+    document.querySelectorAll('.nav-item,.bottom-nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelectorAll(`[data-page="${page}"]`).forEach(i => i.classList.add('active'));
+    if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+    const main = document.getElementById('mainContent'); main.innerHTML = '';
+    const pages = {chat, create, vocal, infographie, carousel, video, upload, planning, autoreply, relances, pipeline, devis, clients, analytics, heatmap, quiz, formations, marketing, settings};
+    if (pages[page]) pages[page](main);
+}
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+function showToast(m) { const t = document.createElement('div'); t.className = 'toast'; t.textContent = m; document.getElementById('toasts').appendChild(t); setTimeout(() => t.remove(), 2500); }
+function copyText(t) { navigator.clipboard.writeText(t).then(() => showToast('✅ Copié')); }
+function esc(s) { return (s || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/`/g, '\\`'); }
+
+// ============ FORMATAGE MARKDOWN ============
+function formatMarkdown(text) {
+    if (!text) return '';
+    
+    // Titres
+    text = text.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+    text = text.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+    text = text.replace(/^# (.+)$/gm, '<h1>$1</h1>');
+    
+    // Gras et italique
+    text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    text = text.replace(/\*(.+?)\*/g, '<em>$1</em>');
+    
+    // Liens
+    text = text.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank">$1</a>');
+    
+    // Code inline
+    text = text.replace(/`(.+?)`/g, '<code>$1</code>');
+    
+    // Sauts de ligne
+    text = text.replace(/\n\n/g, '<br><br>');
+    text = text.replace(/\n/g, '<br>');
+    
+    // Lignes horizontales
+    text = text.replace(/^---$/gm, '<hr>');
+    
+    // Emojis dans les listes
+    text = text.replace(/✅/g, '<span style="color:#16A34A">✅</span>');
+    text = text.replace(/❌/g, '<span style="color:#DC2626">❌</span>');
+    
+    return text;
+}
+
+// ============ CHAT IA ============
+function chat(main) {
+    main.innerHTML = `
+        <div class="topbar"><div><h1>💬 Chat avec Manawa</h1><p>Posez vos questions, l'IA répond</p></div><button class="btn btn-outline btn-sm" onclick="newChatSession()">➕ Nouveau</button></div>
+        <div class="grid-2">
+            <div class="card" style="text-align:center;">
+                <h3>🎤 Dictée vocale</h3>
+                <button class="mic-btn" id="micBtn" onclick="toggleMic()">🎤</button>
+                <p style="font-size:10px;color:var(--gray-500);">Cliquez ou Ctrl+M</p>
+                <p id="voiceText" style="font-size:12px;font-weight:600;"></p>
+            </div>
+            <div class="card" style="text-align:center;">
+                <h3>📎 Analyse de fichier</h3>
+                <div class="file-upload-area" onclick="document.getElementById('chatFileInput').click()">
+                    <p>📄 Cliquez pour joindre un fichier</p>
+                    <p style="font-size:9px;color:var(--gray-500);">PDF, TXT, DOCX</p>
+                </div>
+                <input type="file" id="chatFileInput" style="display:none" accept=".txt,.pdf,.docx" onchange="uploadChatFile(event)">
+            </div>
+        </div>
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-msg ia">👋 <strong>Bonjour !</strong> Je suis <strong>Manawa</strong>, votre assistant IA.<br><br>💬 Posez-moi une question !</div>
+            </div>
+            <div class="chat-input-row">
+                <input type="text" id="chatInput" placeholder="Écrivez votre message..." onkeypress="if(event.key==='Enter')sendChat()">
+                <button class="btn btn-primary" onclick="sendChat()"><i class="bi bi-send-fill"></i></button>
+            </div>
+            <div class="chat-actions">
+                <button class="btn btn-outline btn-sm" onclick="quickChat('Qui es-tu ?')">👤 Qui ?</button>
+                <button class="btn btn-outline btn-sm" onclick="quickChat('Que peux-tu faire ?')">🚀 Capacités</button>
+                <button class="btn btn-outline btn-sm" onclick="quickChat('Crée un post sur Excel')">📊 Excel</button>
+                <button class="btn btn-outline btn-sm" onclick="quickChat('Quel est le salaire d\'un développeur ?')">💰 Salaire</button>
+                <button class="btn btn-outline btn-sm" onclick="quickChat('Propose des idées')">💡 Idées</button>
+                <button class="btn btn-outline btn-sm" onclick="quickChat('Explique-moi Internet')">🌐 Internet</button>
+            </div>
+        </div>`;
+}
+
+function quickChat(msg) { document.getElementById('chatInput').value = msg; sendChat(); }
+
+async function sendChat() {
+    const input = document.getElementById('chatInput'); if (!input) return;
+    const msg = input.value.trim(); if (!msg) return;
+    input.value = ''; input.focus();
+    
+    const messages = document.getElementById('chatMessages');
+    messages.innerHTML += `<div class="chat-msg user">${msg}</div>`;
+    messages.innerHTML += `<div class="chat-msg ia">🤔 Réflexion...</div>`;
+    messages.scrollTop = messages.scrollHeight;
+    
+    try {
+        const res = await fetch(API + '/manawa/chat', {
+            method: 'POST', headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({message:msg, session_id:currentSession})
+        });
+        const data = await res.json();
+        if (data.session_id && !currentSession) currentSession = data.session_id;
+        
+        const formattedContent = formatMarkdown(data.content || 'Réponse');
+        const lastMsg = messages.querySelector('.chat-msg.ia:last-child');
+        if (lastMsg) lastMsg.innerHTML = formattedContent;
+        messages.scrollTop = messages.scrollHeight;
+    } catch(e) {
+        const lastMsg = messages.querySelector('.chat-msg.ia:last-child');
+        if (lastMsg) lastMsg.innerHTML = '❌ Erreur de connexion';
+    }
+}
+
+async function uploadChatFile(event) {
+    const file = event.target.files[0]; if (!file) return;
+    const formData = new FormData(); formData.append('file', file);
+    const messages = document.getElementById('chatMessages');
+    messages.innerHTML += `<div class="chat-msg user">📎 Analyse de : ${file.name}</div>`;
+    messages.innerHTML += `<div class="chat-msg ia">🤔 Analyse en cours...</div>`;
+    try {
+        const res = await fetch(API + '/upload', {method:'POST', body:formData});
+        const data = await res.json();
+        const lastMsg = messages.querySelector('.chat-msg.ia:last-child');
+        if (lastMsg) lastMsg.innerHTML = formatMarkdown(data.analysis || 'Fichier analysé');
+    } catch(e) {
+        const lastMsg = messages.querySelector('.chat-msg.ia:last-child');
+        if (lastMsg) lastMsg.innerHTML = '❌ Erreur analyse';
+    }
+}
+
+function newChatSession() { currentSession = null; document.getElementById('chatMessages').innerHTML = '<div class="chat-msg ia">👋 Nouvelle conversation !</div>'; }
+
+// ============ VOCAL ============
+function initVoice() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return false;
+    recognition = new SR(); recognition.lang = 'fr-FR';
+    recognition.onresult = function(e) {
+        const text = e.results[0][0].transcript;
+        document.getElementById('voiceText').textContent = '"' + text + '"';
+        const input = document.getElementById('chatInput');
+        if (input) { input.value = text; sendChat(); }
+    };
+    recognition.onend = () => { isListening = false; const b = document.getElementById('micBtn'); if (b) b.classList.remove('listening'); };
+    return true;
+}
+function toggleMic() {
+    if (!recognition && !initVoice()) { alert('Utilisez Chrome'); return; }
+    if (isListening) { recognition.stop(); isListening = false; document.getElementById('micBtn').classList.remove('listening'); }
+    else { recognition.start(); isListening = true; document.getElementById('micBtn').classList.add('listening'); }
+}
+
+// ============ PAGES ============
+function create(main) { main.innerHTML = `<div class="topbar"><h1>✍️ Créer un post</h1><button class="btn btn-orange btn-sm" onclick="ideeAleatoire()">🎲 Idée</button></div><div class="grid-2"><div class="card"><h3>🎯 Type</h3><div class="grid-4" id="typeBtns"><button class="btn btn-primary btn-block" onclick="selType('definition',this)">📖 Définition</button><button class="btn btn-outline btn-block" onclick="selType('comparatif',this)">📊 Comparatif</button><button class="btn btn-outline btn-block" onclick="selType('astuce',this)">💡 Astuce</button><button class="btn btn-outline btn-block" onclick="selType('avantages',this)">🚀 Avantages</button></div></div><div class="card"><h3>⚙️ Sujet</h3><div class="form-group"><label>Domaine</label><select class="form-select" id="domaine"><option>Odoo ERP</option><option>Développement Web</option><option>IA</option><option>Formation IT</option><option>Cybersécurité</option><option>Linux</option><option>Bureautique</option><option>Réseaux</option></select></div><div class="form-group"><label>Sujet</label><input class="form-control" id="sujet" placeholder="Ex: HTTP vs HTTPS..."></div><button class="btn btn-primary btn-block btn-lg" onclick="genPost()">🚀 Générer</button></div></div><div id="postRes"></div>`; }
+function selType(t, btn) { currentType = t; btn.parentElement.querySelectorAll('.btn').forEach(b => { b.classList.remove('btn-primary'); b.classList.add('btn-outline'); }); btn.classList.add('btn-primary'); btn.classList.remove('btn-outline'); }
+async function genPost() { const d = document.getElementById('domaine').value, s = document.getElementById('sujet').value || d; const r = document.getElementById('postRes'); r.innerHTML = '<div class="card"><p>🤖 Génération...</p></div>'; try { const res = await fetch(API + '/manawa/post', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sujet:s,domaine:d})}); const data = await res.json(); r.innerHTML = `<div class="card" style="border-left:4px solid var(--blue);"><h3>✅ Post</h3><div class="manawa-post">${formatMarkdown(data.content)}</div><button class="btn btn-primary btn-sm mt-2" onclick="copyText('${esc(data.content)}')">📋 Copier</button></div>`; } catch(e) { r.innerHTML = '<div class="card">❌ Erreur</div>'; } }
+function ideeAleatoire() { const i = ['💻 Commandes Linux','📊 Excel rapide','🔒 Cyber sécurité']; document.getElementById('sujet').value = i[Math.floor(Math.random()*i.length)]; }
+
+function vocal(main) { main.innerHTML = `<div class="topbar"><h1>🎤 Assistant Vocal</h1></div><div class="grid-2"><div class="card" style="text-align:center;"><button class="mic-btn" id="micBtn2" onclick="toggleMic2()">🎤</button><p id="voiceText2" style="font-size:14px;font-weight:600;"></p></div><div id="vocalRes"><div class="card"><p>🎤 Parlez...</p></div></div></div>`; }
+function toggleMic2() { const SR = window.SpeechRecognition || window.webkitSpeechRecognition; if (!SR) { alert('Utilisez Chrome'); return; } const rec = new SR(); rec.lang = 'fr-FR'; rec.onresult = function(e) { const text = e.results[0][0].transcript; document.getElementById('voiceText2').textContent = '"' + text + '"'; document.getElementById('vocalRes').innerHTML = '<div class="card"><p>🤖 Génération...</p></div>'; fetch(API + '/manawa/post', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sujet:text,domaine:'general'})}).then(r => r.json()).then(d => { document.getElementById('vocalRes').innerHTML = `<div class="card" style="border-left:4px solid var(--blue);"><div class="manawa-post">${formatMarkdown(d.content)}</div></div>`; }); }; rec.start(); document.getElementById('micBtn2').classList.add('listening'); rec.onend = () => document.getElementById('micBtn2').classList.remove('listening'); }
+
+function infographie(main) { main.innerHTML = `<div class="topbar"><h1>📊 Infographie</h1></div><div class="card"><div class="form-group"><label>Titre</label><input class="form-control" id="infoT" value="PUBLIC IP vs PRIVATE IP"></div><button class="btn btn-primary btn-block" onclick="genInfo()">🎨 Générer</button></div><div class="image-grid" id="infoRes"></div>`; }
+function genInfo() { const t = document.getElementById('infoT').value, r = document.getElementById('infoRes'); r.innerHTML = '<p>⏳ Génération...</p>'; setTimeout(() => { r.innerHTML = [1,2,3].map(i => `<div class="image-card"><img src="https://image.pollinations.ai/prompt/${encodeURIComponent(t)}?width=300&height=300&nologo=true&seed=${i*100}"><div class="footer"><button class="btn btn-primary btn-sm" onclick="window.open(this.parentElement.parentElement.querySelector('img').src)">Voir</button></div></div>`).join(''); }, 500); }
+
+function carousel(main) { main.innerHTML = `<div class="topbar"><h1>🖼️ Carrousel</h1></div><div class="card"><div class="form-group"><label>Thème</label><input class="form-control" id="carT" value="Avantages Odoo ERP"></div><div class="form-group"><label>Nombre</label><select class="form-select" id="carN"><option>3</option><option>4</option><option>5</option></select></div><button class="btn btn-primary btn-block" onclick="genCarousel()">🎨 Générer</button></div><div class="image-grid" id="carRes"></div>`; }
+function genCarousel() { const t = document.getElementById('carT').value, n = parseInt(document.getElementById('carN').value), r = document.getElementById('carRes'); let h = ''; for (let i = 1; i <= n; i++) { h += `<div class="image-card"><div style="padding:4px;font-size:9px;">Slide ${i}/${n}</div><img src="https://image.pollinations.ai/prompt/slide${i}%20${encodeURIComponent(t)}?width=300&height=300&nologo=true&seed=${i*100}"></div>`; } r.innerHTML = h; }
+
+function video(main) { main.innerHTML = `<div class="topbar"><h1>🎬 Script Vidéo</h1></div><div class="card"><div class="form-group"><label>Sujet</label><input class="form-control" id="vidS" value="Pourquoi Odoo ERP"></div><button class="btn btn-primary btn-block" onclick="genScript()">🎬 Générer</button></div><div id="vidRes"></div>`; }
+function genScript() { document.getElementById('vidRes').innerHTML = `<div class="card"><h3>🎬 Script</h3><div class="manawa-post">🎥 SCRIPT 30s\n\n[0-5s] Musique\n[5-15s] Problème\n[15-25s] Solution MANAWA\n[25-30s] Logo\n\n#ManawaTechs</div></div>`; }
+
+function upload(main) { main.innerHTML = `<div class="topbar"><h1>📎 Analyse de Fichier</h1></div><div class="card"><div class="file-upload-area" onclick="document.getElementById('fileInput').click()"><p style="font-size:30px;">📄</p><p><strong>Cliquez pour joindre un fichier</strong></p><p style="font-size:11px;color:var(--gray-500);">PDF, TXT, DOCX - Max 10MB</p></div><input type="file" id="fileInput" style="display:none" accept=".txt,.pdf,.docx" onchange="handleUpload(event)"><div id="uploadResult"></div></div>`; }
+async function handleUpload(event) { const file = event.target.files[0]; if (!file) return; const r = document.getElementById('uploadResult'); r.innerHTML = '<div class="card"><p>🤖 Analyse de ' + file.name + '...</p></div>'; const formData = new FormData(); formData.append('file', file); try { const res = await fetch(API + '/upload', {method:'POST', body:formData}); const data = await res.json(); r.innerHTML = `<div class="card" style="border-left:4px solid var(--blue);"><h3>✅ ${data.filename}</h3><div class="manawa-post">${formatMarkdown(data.analysis)}</div></div>`; } catch(e) { r.innerHTML = '<div class="card" style="border-left:4px solid var(--red);">❌ Erreur</div>'; } }
+
+function planning(main) { main.innerHTML = `<div class="topbar"><h1>📅 Planification</h1></div><div class="card"><h3>📋 Programmés (${scheduledPosts.length})</h3>${scheduledPosts.length===0?'<p style="color:var(--gray-500);">Aucun</p>':''}</div><div class="grid-3"><div class="card" style="text-align:center;"><h3>🌅 7h-9h</h3><p style="color:var(--green);">+25%</p></div><div class="card" style="text-align:center;"><h3>☀️ 12h-14h</h3><p>Pause</p></div><div class="card" style="text-align:center;"><h3>🌙 19h-21h</h3><p style="color:var(--green);">⭐ Pic</p></div></div>`; }
+function autoreply(main) { main.innerHTML = `<div class="topbar"><h1>💬 Auto-réponses</h1><button class="btn btn-primary btn-sm" onclick="addAutoReply()">+ Ajouter</button></div><div class="highlight blue">Mot: "prix" → "Nos prix varient. Contactez-nous !"</div>`; }
+function addAutoReply() { const m = prompt('Mot-clé:'); if (m) showToast('✅ Ajouté'); }
+function relances(main) { main.innerHTML = `<div class="topbar"><h1>🔄 Relances</h1></div><div class="highlight blue">⏰ J+2 : "Avez-vous regardé notre offre ?"</div><div class="highlight orange">⏰ J+7 : "Dernier message 📞"</div>`; }
+function pipeline(main) { main.innerHTML = `<div class="topbar"><h1>📊 Pipeline CRM</h1></div><div class="grid-2"><div class="pipeline-col"><h4>Prospect <span class="badge badge-blue">2</span></h4><div class="pipeline-card">👤 Jean K.</div><div class="pipeline-card">👤 Marie K.</div></div><div class="pipeline-col"><h4>Contacté</h4><div class="pipeline-card">👤 Paul Y.</div></div></div>`; }
+function devis(main) { main.innerHTML = `<div class="topbar"><h1>💰 Devis & Factures</h1><button class="btn btn-primary btn-sm" onclick="genDevis()">📄 Nouveau</button></div><div class="highlight blue">📄 DEV-001 - 500 000 FCFA <span class="badge badge-orange">En attente</span></div><div id="devRes"></div>`; }
+function genDevis() { const c = prompt('Client:'), m = prompt('Montant:'); if (c && m) document.getElementById('devRes').innerHTML = `<div class="card"><h3>✅ Devis</h3><p>Client: ${c}<br>Montant: ${parseInt(m).toLocaleString()} FCFA</p></div>`; }
+function clients(main) { main.innerHTML = `<div class="topbar"><h1>👥 Prospects</h1><button class="btn btn-primary btn-sm" onclick="addClient()">+ Ajouter</button></div><div class="card">👤 Jean Kouassi - +22501020304 <span class="badge badge-blue">PME</span></div>`; }
+function addClient() { const n = prompt('Nom:'), t = prompt('Tél:'); if (n && t) showToast('✅ Ajouté'); }
+function analytics(main) { main.innerHTML = `<div class="topbar"><h1>📈 Statistiques</h1></div><div class="stats-row"><div class="stat-card"><div class="value">1,250</div><div class="label">Abonnés</div></div><div class="stat-card"><div class="value">3,800</div><div class="label">Vues/sem</div></div></div><div class="card"><h3>📊 Évolution</h3><div class="chart-container"><canvas id="chartA"></canvas></div></div>`; setTimeout(() => { const c = document.getElementById('chartA'); if (c) new Chart(c, { type:'line', data:{labels:['S1','S2','S3','S4'],datasets:[{label:'Abonnés',data:[800,950,1100,1250],borderColor:'#2563EB'}]} }); }, 200); }
+function heatmap(main) { main.innerHTML = `<div class="topbar"><h1>🗺️ Heatmap</h1></div><div class="card"><h3>Activité</h3><div class="chart-container"><canvas id="chartH"></canvas></div></div>`; setTimeout(() => { const c = document.getElementById('chartH'); if (c) new Chart(c, { type:'bar', data:{labels:['Lun','Mar','Mer','Jeu','Ven'],datasets:[{label:'Matin',data:[45,50,60,40,55],backgroundColor:'#2563EB'},{label:'Soir',data:[70,80,95,65,75],backgroundColor:'#F97316'}]} }); }, 200); }
+function quiz(main) { main.innerHTML = `<div class="topbar"><h1>❓ Quiz</h1></div><div class="card"><div class="form-group"><label>Question</label><input class="form-control" id="quizQ" value="HTTP vs HTTPS : différence ?"></div><div class="grid-2"><input class="form-control" id="qA" value="Sécurité SSL"><input class="form-control" id="qB" value="Vitesse"></div><button class="btn btn-primary btn-block" onclick="genQuiz()">📱 Générer</button></div><div id="quizRes"></div>`; }
+function genQuiz() { document.getElementById('quizRes').innerHTML = `<div class="manawa-post">❓ QUIZ\n\n${document.getElementById('quizQ').value}\n\nA) ${document.getElementById('qA').value}\nB) ${document.getElementById('qB').value}\n\n#ManawaTechs</div>`; }
+function formations(main) { main.innerHTML = `<div class="topbar"><h1>🎓 Formations</h1></div><div class="card"><strong>Bureautique</strong> - 50 000 FCFA - 4 sem</div><div class="card"><strong>Programmation Web</strong> - 150 000 FCFA - 8 sem</div><div class="card"><strong>Cybersécurité</strong> - 200 000 FCFA - 6 sem</div>`; }
+function marketing(main) { main.innerHTML = `<div class="topbar"><h1>📈 Marketing</h1></div><div class="grid-2"><div class="card"><h3>📧 Email</h3><textarea class="form-control" rows="3"></textarea></div><div class="card"><h3>📱 Landing</h3><p>manawatechs.web.app</p></div></div><div class="card"><h3>📊 ROI</h3><div class="grid-2"><input class="form-control" id="roiI" value="500000"><input class="form-control" id="roiG" value="2000000"></div><button class="btn btn-primary btn-sm mt-2" onclick="calcROI()">Calculer</button><div id="roiRes" class="mt-2"></div></div>`; }
+function calcROI() { const i = parseInt(document.getElementById('roiI').value), g = parseInt(document.getElementById('roiG').value); if (i && g) document.getElementById('roiRes').innerHTML = `<div class="highlight green">💰 ROI: ${((g-i)/i*100).toFixed(0)}% - Gain: ${(g-i).toLocaleString()} FCFA</div>`; }
+function settings(main) { main.innerHTML = `<div class="topbar"><h1>⚙️ Paramètres</h1></div><div class="card"><h3>🔗 Chaîne WhatsApp</h3><input class="form-control" value="https://whatsapp.com/channel/0029Vb7LcepA2pLCLxhjCd0b" readonly></div><div class="card"><h3>📱 Contact</h3><input class="form-control" value="+225 0797969475" readonly></div><div class="card"><h3>🌐 Site web</h3><input class="form-control" value="https://manawatechs.web.app" readonly></div>`; }
+
+chat(document.getElementById('mainContent'));
+document.addEventListener('keydown', e => { if (e.key === 'm' && e.ctrlKey) { e.preventDefault(); toggleMic(); } });
+</script>
+</body>
+</html>
