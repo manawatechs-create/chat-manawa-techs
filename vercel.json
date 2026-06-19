@@ -1,7 +1,9 @@
 {
   "version": 2,
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "/api/$1" },
+    { "source": "/api/chat", "destination": "/api/chat" },
+    { "source": "/api/manawa/chat", "destination": "/api/chat" },
+    { "source": "/api/manawa/post", "destination": "/api/chat" },
     { "source": "/(.*)", "destination": "/frontend/$1" },
     { "source": "/", "destination": "/frontend/index.html" }
   ]
